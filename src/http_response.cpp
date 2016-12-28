@@ -857,12 +857,15 @@ void response::make_error_response(int stat,std::string const &msg)
 		"	\"http://www.w3.org/TR/html4/loose.dtd\">\n"
 		"<html>\n"
 		"  <head>\n"
+		"    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n"
+		"    <style type=\"text/css\"><!--body,td,th {color: #FFFFFF;}body {background-color: #0099CC;}.status {font-size: 24px;font-family: \"微软雅黑\";}.msg {font-size: 16px}.smile {font-size: 100px;font-family: \"微软雅黑\";}--></style>\n"
 		"    <title>"<<stat<<" &mdash; "<< http::response::status_to_string(stat)<<"</title>\n"
 		"  </head>\n"
 		"  <body>\n"
-		"    <h1>"<<stat<<" &mdash; "<< http::response::status_to_string(stat)<<"</h1>\n";
+		"  <span class=\"smile\">&nbsp;:(</span>\n"
+		"    <p class=\"status\">"<<stat<<" &mdash; "<< http::response::status_to_string(stat)<<"</p>\n";
 	if(!msg.empty()) {
-		out()<<"    <p>"<<util::escape(msg)<<"</p>\n";
+		out()<<"    <p class=\"status\"><span class=\"msg\">"<<util::escape(msg)<<"</span></p>\n";
 	}
 	out()<<	"  </body>\n"
 		"</html>\n"<<std::flush;
