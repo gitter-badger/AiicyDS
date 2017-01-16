@@ -12,7 +12,7 @@
 #include <locale.h>
 #include <string>
 
-#if defined(__APPLE__) || defined(__FreeBSD__)
+#ifdef __APPLE__
 #include <xlocale.h>
 #endif
 

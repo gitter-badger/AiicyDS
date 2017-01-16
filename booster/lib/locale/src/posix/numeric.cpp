@@ -6,9 +6,6 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 #define BOOSTER_SOURCE
-#if defined(__FreeBSD__)
-#include <xlocale.h>
-#endif
 #include <locale>
 #include <string>
 #include <ios>
@@ -388,7 +385,7 @@ struct basic_numpunct {
     }
     basic_numpunct(locale_t lc) 
     {
-    #if defined(__APPLE__) || defined(__FreeBSD__)
+    #ifdef __APPLE__
         lconv *cv = localeconv_l(lc);
         grouping = cv->grouping;
         thousands_sep = cv->thousands_sep;

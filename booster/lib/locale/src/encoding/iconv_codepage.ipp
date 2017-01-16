@@ -79,14 +79,8 @@ public:
                 res = conv(0,0,&out_ptr,&out_left);
 
             int err = errno;
-
+           
             size_t output_count = (out_ptr - out_start) / sizeof(OutChar);
-            
-            if(res!=0 && res!=(size_t)(-1)) {
-                    if(how_ == stop) {
-                        throw conversion_error();
-                    }
-            }
 
             sresult.append(&result[0],output_count);
 
@@ -172,6 +166,7 @@ public:
 
 };
 
+
 template<typename CharType>
 class iconv_to_utf : public iconverter_base, public converter_to_utf<CharType>
 {
@@ -190,6 +185,7 @@ public:
         return real_convert<char_type,char>(begin,end);
     }
 };
+
 
 
 
