@@ -8,10 +8,10 @@ set(CPPCMS_PACKAGE_STRING "CppCMS/1.1.0")
 set(CPPCMS_PACKAGE_VERSION "1.1.0")
 
 set(CPPCMS_VERSION "1.1.0")
-set(BOOSTER_VERSION "1.1.0")
+set(BOOSTER_VERSION "1.6.3")
 
 set(CPPCMS_SOVERSION "1")
-set(BOOSTER_SOVERSION "0")
+set(BOOSTER_SOVERSION "6")
 
 include(CheckFunctionExists)
 include(CheckCXXSourceCompiles)
@@ -59,11 +59,13 @@ else()
 endif()
 
 add_subdirectory(booster)
+add_subdirectory(cppcms-skeleton)
 
 include_directories(booster)
 include_directories(src)
 include_directories(private)
 include_directories(cppcms_boost)
+include_directories(cppcms-skeleton)
 include_directories(${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/booster)
