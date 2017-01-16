@@ -12,6 +12,8 @@ set(BOOSTER_VERSION "1.6.3")
 
 set(CPPCMS_SOVERSION "1")
 set(BOOSTER_SOVERSION "6")
+SET(CPACK_GENERATOR "DEB")
+SET(CPACK_PACKAGE_CONTACT "sndnvaps@gmail.com")
 
 include(CheckFunctionExists)
 include(CheckCXXSourceCompiles)

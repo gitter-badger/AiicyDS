@@ -2,10 +2,11 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 IF(COMMAND CMAKE_POLICY)
   CMAKE_POLICY(SET CMP0037 OLD)
+  CMAKE_POLICY(SET CMP0048 OLD)
 ENDIF(COMMAND CMAKE_POLICY)
 PROJECT(cppcmsskel)
 
-set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
+#set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++0x")
 
 set(PROJECT_VERSION "0.25.3")
@@ -20,12 +21,20 @@ add_custom_target(
 ###################
 # Dependency check
 ##################
-find_library(CPPCMS cppcms)
-find_library(BOOSTER booster)
-find_library(CPPDB cppdb)
+
+
+
+#find_library(CPPCMS cppcms)
+#find_library(BOOSTER booster)
+
+# find_library(CPPDB cppdb)
 
 find_library(MYSQL mysqlclient)
 find_path(MYSQL_PATH mysql.h PATH_SUFFIXES mysql)
+
+add_subdirectory(cppdb)
+
+include_directories(cppdb)
 include_directories(${MYSQL_PATH})
 
 
@@ -83,9 +92,9 @@ add_library(
 # TODO cppdb should not be mandatory
 set(
     CPPCMSSKEL_LIBS
-    ${CPPCMS}
-    ${CPPDB}
-    ${BOOSTER}
+    cppcms
+    cppdb
+    booster
     ${MYSQL}
 )
 
