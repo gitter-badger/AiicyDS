@@ -9,10 +9,8 @@ os:
 
 before_install:
   - sudo apt-get install -y libmysqlclient-dev
-before_scirpt:
-  - mkdir build && cd build && cmake ../
 script:
-  - cd build && make package
+  - mkdir build && cd build && cmake ../ && make package
 deploy:
   provider: releases
   api_key: "${GH_DEPLOY_KEY}"
