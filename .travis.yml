@@ -4,7 +4,6 @@ sudo: required
 
 compiler:
   - gcc
-  - g++
 os:
   linux
 
@@ -13,11 +12,11 @@ before_install:
 before_scirpt:
   - mkdir build && cd build && cmake ../
 script:
-  - make package
+  - cd build && make package
 deploy:
   provider: releases
   api_key: "${GH_DEPLOY_KEY}"
-  file: "cppcmsskel-0.1.1-Linux.deb"
+  file: "build/cppcmsskel-0.1.1-Linux.deb"
   skip_cleanup: true
   on:
     tags: true
