@@ -1,5 +1,6 @@
 #Introduction to cppcmsskel
 
+[![Build Status](https://travis-ci.org/Aiicy/AiicyCMS.svg?branch=master)](https://travis-ci.org/Aiicy/AiicyCMS)
 
 Cppcmsskel is intented to be a framework over [cppcms](http://cppcms.com/wikipp/en/page/main)
 which is itself a framework in C++ to create website
