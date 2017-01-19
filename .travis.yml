@@ -10,11 +10,11 @@ os:
 before_install:
   - sudo apt-get install -y libmysqlclient-dev
 script:
-  - mkdir build && cd build && cmake ../ && make package
+  - cmake . && make package
 deploy:
   provider: releases
   api_key: "${GH_DEPLOY_KEY}"
-  file: "build/cppcmsskel-0.1.1-Linux.deb"
+  file: "cppcmsskel-0.1.1-Linux.deb"
   skip_cleanup: true
   on:
     tags: true
