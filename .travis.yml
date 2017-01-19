@@ -1,0 +1,23 @@
+language: cpp
+dist: trusty
+sudo: required
+
+compiler:
+  - gcc
+  - g++
+os:
+  linux
+
+before_install:
+  - sudo apt-get install -y libmysqlclient-dev
+before_scirpt:
+  - mkdir build && cd build && cmake ../
+script:
+  - make package
+deploy:
+  provider: releases
+  api_key: "${GH_DEPLOY_KEY}"
+  file: "cppcmsskel-0.1.1-Linux.deb"
+  skip_cleanup: true
+  on:
+    tags: true
