@@ -21,7 +21,8 @@ go get github.com/polaris1119/gvt
 PATH=$PATH:~/polaris1119/gvt
 ```
 * get pkg
-on unix
+
+on Linux
 ```
 ./getpkg.sh
 ```
@@ -30,7 +31,7 @@ on windows
 ./getpkg.bat
 ```
 * build AiicyCMS
-on unix
+on Linux
 ```
 ./install.sh
 ```
@@ -47,5 +48,5 @@ on windows
 ```
 ./start.bat
 ```
-##test
+##Test
 assess http://127.0.0.1:8088 with brower
