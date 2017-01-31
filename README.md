@@ -11,9 +11,9 @@ AiicyCMS(with go)
   [zip file](https://github.com/Aiicy/AiicyCMS/archive/go.zip)
   
   or
-  ```
-  git clone https://github.com/Aiicy/AiicyCMS.git -b go
-  ```
+```
+git clone https://github.com/Aiicy/AiicyCMS.git -b go
+```
 * get gvt
 ```
 go get github.com/polaris1119/gvt
