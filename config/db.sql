@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `topics` (
   `nid` int unsigned NOT NULL COMMENT '节点id',
   `uid` int unsigned NOT NULL COMMENT '帖子作者',
   `lastreplyuid` int unsigned NOT NULL DEFAULT 0 COMMENT '最后回复者',
-  `lastreplytime` timestamp NOT NULL DEFAULT 0 COMMENT '最后回复时间',
+  `lastreplytime` timestamp NOT NULL DEFAULT '2017-01-31 15:15:13' COMMENT '最后回复时间',
   `flag` tinyint NOT NULL DEFAULT 0 COMMENT '审核标识,0-未审核;1-已审核;2-审核删除;3-用户自己删除',
   `editor_uid` int unsigned NOT NULL DEFAULT 0 COMMENT '最后编辑人',
   `top` tinyint unsigned NOT NULL DEFAULT '0' COMMENT '置顶，0否，1置顶',
