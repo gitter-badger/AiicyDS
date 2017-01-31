@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `topics` (
   `flag` tinyint NOT NULL DEFAULT 0 COMMENT '审核标识,0-未审核;1-已审核;2-审核删除;3-用户自己删除',
   `editor_uid` int unsigned NOT NULL DEFAULT 0 COMMENT '最后编辑人',
   `top` tinyint unsigned NOT NULL DEFAULT '0' COMMENT '置顶，0否，1置顶',
-  `ctime` timestamp NOT NULL DEFAULT 0,
+  `ctime` timestamp NOT NULL DEFAULT '2017-01-31 15:15:13',
   `mtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`tid`),
   KEY `uid` (`uid`),
@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS `user_info` (
   `unsubscribe` tinyint unsigned NOT NULL DEFAULT 0 COMMENT '是否退订本站邮件，0-否；1-是',
   `status` tinyint unsigned NOT NULL DEFAULT 0 COMMENT '用户账号状态。0-默认；1-已审核；2-拒绝；3-冻结；4-停号',
   `is_root` tinyint unsigned NOT NULL DEFAULT 0 COMMENT '是否超级用户，不受权限控制：1-是',
-  `ctime` timestamp NOT NULL DEFAULT 0,
+  `ctime` timestamp NOT NULL DEFAULT '2017-01-31 15:15:13',
   `mtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uid`),
   UNIQUE KEY (`username`),
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS `role` (
   `roleid` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(128) NOT NULL DEFAULT '' COMMENT '角色名',
   `op_user` varchar(20) NOT NULL DEFAULT '' COMMENT '操作人',
-  `ctime` timestamp NOT NULL DEFAULT 0,
+  `ctime` timestamp NOT NULL DEFAULT '2017-01-31 15:15:13',
   `mtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`roleid`),
   UNIQUE KEY (`name`)
@@ -134,7 +134,7 @@ CREATE TABLE IF NOT EXISTS `authority` (
   `menu2` int unsigned NOT NULL DEFAULT 0 COMMENT '所属二级菜单，本身为二级菜单，则为0',
   `route` varchar(128) NOT NULL DEFAULT '' COMMENT '路由（权限）',
   `op_user` varchar(20) NOT NULL COMMENT '操作人',
-  `ctime` timestamp NOT NULL DEFAULT 0,
+  `ctime` timestamp NOT NULL DEFAULT '2017-01-31 15:15:13',
   `mtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`aid`),
   KEY (`route`)
@@ -188,7 +188,7 @@ CREATE TABLE IF NOT EXISTS `wiki` (
   `uri` varchar(50) NOT NULL COMMENT 'uri',
   `uid` int unsigned NOT NULL COMMENT '作者',
   `cuid` varchar(100) NOT NULL DEFAULT '' COMMENT '贡献者',
-  `ctime` timestamp NOT NULL DEFAULT 0,
+  `ctime` timestamp NOT NULL DEFAULT '2017-01-31 15:15:13',
   `mtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY (`uri`)
@@ -202,7 +202,7 @@ CREATE TABLE IF NOT EXISTS `resource` (
   `url` varchar(150) NOT NULL COMMENT '链接url',
   `uid` int unsigned NOT NULL COMMENT '作者',
   `catid` int unsigned NOT NULL COMMENT '所属类别',
-  `ctime` timestamp NOT NULL DEFAULT 0,
+  `ctime` timestamp NOT NULL DEFAULT '2017-01-31 15:15:13',
   `mtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY (`url`)
@@ -225,6 +225,8 @@ CREATE TABLE IF NOT EXISTS `resource_category` (
   PRIMARY KEY (`catid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '资源分类表';
 
+ALTER TABLE `resource_category` AUTO_INCREMENT = 1;
+
 CREATE TABLE IF NOT EXISTS `articles` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `domain` varchar(50) NOT NULL DEFAULT '' COMMENT '来源域名（不一定是顶级域名）',
@@ -246,7 +248,7 @@ CREATE TABLE IF NOT EXISTS `articles` (
   `top` tinyint unsigned NOT NULL DEFAULT 0 COMMENT '置顶，0否，1置顶',
   `status` tinyint unsigned NOT NULL DEFAULT 0 COMMENT '状态：0-初始抓取；1-已上线；2-下线(审核拒绝)',
   `op_user` varchar(20) NOT NULL DEFAULT '' COMMENT '操作人',
-  `ctime` timestamp NOT NULL DEFAULT 0,
+  `ctime` timestamp NOT NULL DEFAULT '2017-01-31 15:15:13',
   `mtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY (`url`),
@@ -324,7 +326,7 @@ CREATE TABLE IF NOT EXISTS `open_project` (
   `cmtnum` int unsigned NOT NULL DEFAULT 0 COMMENT '评论数',
   `likenum` int unsigned NOT NULL DEFAULT 0 COMMENT '赞数',
   `status` tinyint unsigned NOT NULL DEFAULT 0 COMMENT '状态：0-新建；1-已上线；2-下线(审核拒绝)',
-  `ctime` timestamp NOT NULL DEFAULT 0 COMMENT '加入时间',
+  `ctime` timestamp NOT NULL DEFAULT '2017-01-31 15:15:13' COMMENT '加入时间',
   `mtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY (`uri`)
