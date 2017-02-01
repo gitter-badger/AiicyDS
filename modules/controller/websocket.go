@@ -11,8 +11,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/labstack/echo.v3.0.3"
-	"github.com/labstack/echo/engine/standard.v3.0.3"
+	"github.com/labstack/echo"
+	"github.com/labstack/echo/engine/standard"
 	"github.com/polaris1119/goutils"
 	"github.com/polaris1119/logger"
 

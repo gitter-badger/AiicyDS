@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/labstack/echo/engine/standard.v3.0.3"
+	"github.com/labstack/echo/engine/standard"
 	"github.com/tylerb/graceful"
 )
 

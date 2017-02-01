@@ -26,7 +26,7 @@ import (
 
 	"github.com/fatih/structs"
 	"github.com/labstack/echo"
-	"github.com/labstack/echo/engine/standard.v3.0.3"
+	"github.com/labstack/echo/engine/standard"
 	mw "github.com/labstack/echo/middleware"
 	"github.com/polaris1119/logger"
 	thirdmw "github.com/polaris1119/middleware"
