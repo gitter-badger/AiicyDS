@@ -2099,7 +2099,7 @@ func configAppIni() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "config/app.ini", size: 1078, mode: os.FileMode(420), modTime: time.Unix(1485938054, 0)}
+	info := bindataFileInfo{name: "config/app.ini", size: 1078, mode: os.FileMode(420), modTime: time.Unix(1485953956, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2139,7 +2139,7 @@ func configLocaleLocale_enUsIni() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "config/locale/locale_en-US.ini", size: 29, mode: os.FileMode(420), modTime: time.Unix(1485934700, 0)}
+	info := bindataFileInfo{name: "config/locale/locale_en-US.ini", size: 29, mode: os.FileMode(420), modTime: time.Unix(1485953956, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2159,7 +2159,7 @@ func configLocaleLocale_zhCnIni() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "config/locale/locale_zh-CN.ini", size: 29, mode: os.FileMode(420), modTime: time.Unix(1485934700, 0)}
+	info := bindataFileInfo{name: "config/locale/locale_zh-CN.ini", size: 29, mode: os.FileMode(420), modTime: time.Unix(1485953956, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }

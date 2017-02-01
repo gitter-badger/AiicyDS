@@ -15,11 +15,11 @@ import (
 	"net/http"
 	"strings"
 	"time"
-	"util"
+	"github.com/Aiicy/AiicyCMS/modules/util"
 
 	"github.com/gorilla/sessions"
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/engine/standard"
+	"github.com/labstack/echo.v3.0.3"
+	"github.com/labstack/echo/engine/standard.v3.0.3"
 	"github.com/polaris1119/config"
 )
 

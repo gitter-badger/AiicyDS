@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/facebookgo/grace/gracehttp"
-	"github.com/labstack/echo/engine/standard"
+	"github.com/labstack/echo/engine/standard.v3.0.3"
 )
 
 func gracefulRun(std *standard.Server) {
