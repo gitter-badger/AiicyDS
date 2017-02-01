@@ -25,40 +25,19 @@ export GOPATH=~/.go
 ```
 git clone https://github.com/Aiicy/AiicyCMS.git -b go
 ```
-* get gvt
+* get gom
 ```
-go get github.com/FiloSottile/gvt
+go get github.com/mattn/gom
 ```
-If you can not access Google
+* install the dep package
 ```
-go get github.com/polaris1119/gvt
+gom install
 ```
-in ~/.bashrc
+* build the exec
 ```
-export PATH=$PATH:~/.go/bin
+gom build
 ```
-```
-cd AiicyCMS/
-```
-* get pkg
 
-on Linux
-```
-./getpkg.sh
-```
-on windows
-```
-./getpkg.bat
-```
-* build AiicyCMS
-on Linux
-```
-./install.sh
-```
-on windows
-```
-./install.bat
-```
 ##RUN AiicyCMS
 on Linux
 ```
