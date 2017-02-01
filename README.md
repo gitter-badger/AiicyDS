@@ -70,3 +70,9 @@ on windows
 ```
 ##Test
 assess http://127.0.0.1:8088 with brower
+
+## go-bindata
+```shell
+	$go get -u github.com/jteeuwen/go-bindata/go-bindata
+	$./bindata.sh
+```
