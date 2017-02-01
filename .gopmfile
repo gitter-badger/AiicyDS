@@ -7,6 +7,7 @@ github.com/polaris1119/config = branch:master
 github.com/polaris1119/logger = branch:master
 github.com/polaris1119/middleware = branch:master
 github.com/robfig/cron = branch:master
+github.com/polaris1119/nosql = branch:master
 
 [res]
 include = static|config|template
