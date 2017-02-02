@@ -23,19 +23,23 @@ export GOPATH=~/.go
   
   or
 ```
-git clone https://github.com/Aiicy/AiicyCMS.git -b go
+git clone https://github.com/Aiicy/AiicyCMS.git -b master
 ```
 * get gom
 ```
 go get github.com/mattn/gom
 ```
+* get gvt
+```
+go get github.com/polaris1119/gvt
+```
 * install the dep package
 ```
-gom install
+./getpkg.sh
 ```
 * build the exec
 ```
-gom build
+./install.sh
 ```
 
 ##RUN AiicyCMS
