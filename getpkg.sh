@@ -22,22 +22,10 @@ export GOPATH=`pwd`
 if [ -d "vendor/src/github.com" ]; then
 	if [ "$1" = "update" ]; then
 		mv vendor/src/github.com vendor/
-	if [ -d "vendor/src/golang.org" ]; then
-		mv vendor/src/golang.org vendor/
-	fi
-	if [ -d "vendor/src/gopkg.in" ]; then
-		mv vendor/src/gopkg.in vendor/
-	fi
-
+		if [ -d "vendor/src/golang.org" ]; then
+			mv vendor/src/golang.org vendor/
+		fi
 		gvt update -all
-
-		mv vendor/github.com vendor/src/
-	if [ -d "vendor/golang.org" ]; then
-		mv vendor/golang.org vendor/src/
-	fi
-	if [ -d "vendor/gopkg.in" ]; then
-		mv vendor/gopkg.in vendor/src
-	fi
 	fi
 elif [ -f "vendor/manifest" ]; then
 	gvt restore -connections 8
@@ -54,17 +42,6 @@ else
 	done
 fi
 
-if [ -d "vendor/github.com" ]; then
-	mv vendor/github.com vendor/src/
-fi
-
-if [ -d "vendor/golang.org" ]; then
-	mv vendor/golang.org vendor/src/
-fi
-
-if [ -d "vendor/gopkg.in" ]; then
-	mv vendor/gopkg.ing vendor/src/
-fi
 
 cd ..
 

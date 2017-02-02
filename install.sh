@@ -9,15 +9,29 @@ fi
 
 CURDIR=`pwd`
 OLDGOPATH="$GOPATH"
-export GOPATH=$GOPATH:"$CURDIR"
+export GOPATH="$CURDIR"
 
 if [ ! -d log ]; then
 	mkdir log
 fi
 
+if [  ! -d "vendor/src" ]; then
+	mkdir vendor/src
+fi
+
+
+if [ -d vendor/github.com ]; then
+	mv vendor/github.com vendor/src
+fi
+
+if [ -d vendor/golang.org ]; then
+	mv vendor/golang.org vendor/src
+fi
+
 BUILD="`git symbolic-ref HEAD | cut -b 12-`-`git rev-parse HEAD`"
 
 gom build -ldflags "-X global.Build="$BUILD -o bin/AiicyCMS
+
 #go install server/indexer
 #go install server/crawler
 
