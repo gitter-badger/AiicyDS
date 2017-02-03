@@ -7,7 +7,7 @@
 package controller
 
 import (
-	. "github.com/Aiicy/AiicyCMS/modules/http"
+	. "github.com/Aiicy/AiicyDS/modules/http"
 
 	"github.com/dchest/captcha"
 	"github.com/labstack/echo"

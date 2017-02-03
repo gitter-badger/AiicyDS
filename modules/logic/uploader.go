@@ -17,7 +17,7 @@ import (
 	gio "io"
 	"io/ioutil"
 	"mime"
-	"github.com/Aiicy/AiicyCMS/model"
+	"github.com/Aiicy/AiicyDS/model"
 	"net/http"
 	"path/filepath"
 	"strings"
@@ -26,7 +26,7 @@ import (
 
 	"golang.org/x/net/context"
 
-	. "github.com/Aiicy/AiicyCMS/modules/db"
+	. "github.com/Aiicy/AiicyDS/modules/db"
 
 	"github.com/polaris1119/config"
 	"github.com/polaris1119/goutils"

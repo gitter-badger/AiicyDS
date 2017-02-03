@@ -8,10 +8,10 @@ package middleware
 
 import (
 	"errors"
-	"github.com/Aiicy/AiicyCMS/modules/logic"
+	"github.com/Aiicy/AiicyDS/modules/logic"
 	"strings"
 
-	"github.com/Aiicy/AiicyCMS/model"
+	"github.com/Aiicy/AiicyDS/model"
 
 	"github.com/labstack/echo"
 	"github.com/polaris1119/config"

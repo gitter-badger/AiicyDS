@@ -18,6 +18,6 @@ fi
 export GOTRACEBACK=crash
 ulimit -c unlimited
 
-bin/AiicyCMS >> log/panic.log 2>&1 &
+bin/AiicyDS >> log/panic.log 2>&1 &
 
 echo "start successfully"

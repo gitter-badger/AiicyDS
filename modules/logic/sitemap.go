@@ -11,13 +11,13 @@ import (
 	"strconv"
 	"text/template"
 	"time"
-	"github.com/Aiicy/AiicyCMS/modules/util"
+	"github.com/Aiicy/AiicyDS/modules/util"
 
 	"github.com/polaris1119/config"
 	"github.com/polaris1119/logger"
 
-	. "github.com/Aiicy/AiicyCMS/modules/db"
-	"github.com/Aiicy/AiicyCMS/model"
+	. "github.com/Aiicy/AiicyDS/modules/db"
+	"github.com/Aiicy/AiicyDS/model"
 )
 
 // 自定义模板函数

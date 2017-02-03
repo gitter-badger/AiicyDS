@@ -20,7 +20,7 @@ import (
 	"gopkg.in/ini.v1"
 	"gopkg.in/macaron.v1"
 
-	"github.com/Aiicy/AiicyCMS/modules/bindata"
+	"github.com/Aiicy/AiicyDS/modules/bindata"
 )
 
 type NavbarItem struct {

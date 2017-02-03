@@ -25,15 +25,15 @@ import (
 	"gopkg.in/macaron.v1"
 
 
-	"github.com/Aiicy/AiicyCMS/models"
-	"github.com/Aiicy/AiicyCMS/modules/middleware"
-	"github.com/Aiicy/AiicyCMS/modules/setting"
-	"github.com/Aiicy/AiicyCMS/routers"
+	"github.com/Aiicy/AiicyDS/models"
+	"github.com/Aiicy/AiicyDS/modules/middleware"
+	"github.com/Aiicy/AiicyDS/modules/setting"
+	"github.com/Aiicy/AiicyDS/routers"
 )
 
 var Web = cli.Command{
 	Name:   "web",
-	Usage:  "Start AiicyCMS web server",
+	Usage:  "Start AiicyDS web server",
 	Action: runWeb,
 	Flags: []cli.Flag{
 		stringFlag("config, c", "custom/app.ini", "Custom configuration file path"),

@@ -7,12 +7,12 @@
 package logic
 
 import (
-	"github.com/Aiicy/AiicyCMS/modules/global"
-	"github.com/Aiicy/AiicyCMS/model"
+	"github.com/Aiicy/AiicyDS/modules/global"
+	"github.com/Aiicy/AiicyDS/model"
 	"net/url"
 	"strconv"
 
-	. "github.com/Aiicy/AiicyCMS/modules/db"
+	. "github.com/Aiicy/AiicyDS/modules/db"
 
 	"github.com/polaris1119/logger"
 	"golang.org/x/net/context"

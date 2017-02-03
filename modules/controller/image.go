@@ -8,11 +8,11 @@ package controller
 
 import (
 	"io/ioutil"
-	"github.com/Aiicy/AiicyCMS/modules/logic"
+	"github.com/Aiicy/AiicyDS/modules/logic"
 	"os"
 	"path/filepath"
 
-	. "github.com/Aiicy/AiicyCMS/modules/http"
+	. "github.com/Aiicy/AiicyDS/modules/http"
 
 	"github.com/labstack/echo"
 	"github.com/polaris1119/times"

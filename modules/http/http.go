@@ -8,14 +8,14 @@ package http
 
 import (
 	"bytes"
-	"github.com/Aiicy/AiicyCMS/modules/global"
+	"github.com/Aiicy/AiicyDS/modules/global"
 	"html/template"
-	"github.com/Aiicy/AiicyCMS/modules/logic"
-	"github.com/Aiicy/AiicyCMS/model"
+	"github.com/Aiicy/AiicyDS/modules/logic"
+	"github.com/Aiicy/AiicyDS/model"
 	"net/http"
 	"strings"
 	"time"
-	"github.com/Aiicy/AiicyCMS/modules/util"
+	"github.com/Aiicy/AiicyDS/modules/util"
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo"

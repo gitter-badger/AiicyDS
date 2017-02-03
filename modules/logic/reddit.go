@@ -16,8 +16,8 @@ import (
 	"strings"
 	"time"
 
-	. "github.com/Aiicy/AiicyCMS/modules/db"
-	"github.com/Aiicy/AiicyCMS/model"
+	. "github.com/Aiicy/AiicyDS/modules/db"
+	"github.com/Aiicy/AiicyDS/model"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/polaris1119/logger"

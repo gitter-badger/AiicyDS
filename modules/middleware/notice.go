@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"fmt"
-	"github.com/Aiicy/AiicyCMS/modules/logic"
-	"github.com/Aiicy/AiicyCMS/model"
+	"github.com/Aiicy/AiicyDS/modules/logic"
+	"github.com/Aiicy/AiicyDS/model"
 
 	"github.com/labstack/echo"
 )

@@ -3,12 +3,12 @@ package logic
 import (
 	"bytes"
 	"io/ioutil"
-	"github.com/Aiicy/AiicyCMS/model"
+	"github.com/Aiicy/AiicyDS/model"
 
 	"github.com/polaris1119/config"
 	"golang.org/x/net/context"
 
-	. "github.com/Aiicy/AiicyCMS/modules/db"
+	. "github.com/Aiicy/AiicyDS/modules/db"
 )
 
 type InstallLogic struct{}

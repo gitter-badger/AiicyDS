@@ -2,8 +2,8 @@
 	"version": 0,
 	"dependencies": [
 		{
-			"importpath": "github.com/Aiicy/AiicyCMS",
-			"repository": "https://github.com/Aiicy/AiicyCMS",
+			"importpath": "github.com/Aiicy/AiicyDS",
+			"repository": "https://github.com/Aiicy/AiicyDS",
 			"revision": "62fccd2535c30663a64104e30e047b317187b844",
 			"branch": "master"
 		},

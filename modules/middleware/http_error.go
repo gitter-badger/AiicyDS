@@ -8,9 +8,9 @@ package middleware
 
 import (
 	"net/http"
-	"github.com/Aiicy/AiicyCMS/modules/util"
+	"github.com/Aiicy/AiicyDS/modules/util"
 
-	. "github.com/Aiicy/AiicyCMS/modules/http"
+	. "github.com/Aiicy/AiicyDS/modules/http"
 
 	"github.com/labstack/echo"
 )

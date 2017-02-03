@@ -7,15 +7,15 @@
 package controller
 
 import (
-	"github.com/Aiicy/AiicyCMS/modules/middleware"
-	"github.com/Aiicy/AiicyCMS/modules/logic"
+	"github.com/Aiicy/AiicyDS/modules/middleware"
+	"github.com/Aiicy/AiicyDS/modules/logic"
 	"net/http"
 
 	"github.com/labstack/echo"
 	"github.com/polaris1119/goutils"
 
-	. "github.com/Aiicy/AiicyCMS/modules/http"
-	"github.com/Aiicy/AiicyCMS/model"
+	. "github.com/Aiicy/AiicyDS/modules/http"
+	"github.com/Aiicy/AiicyDS/model"
 )
 
 // 在需要评论（喜欢）且要回调的地方注册评论（喜欢）对象

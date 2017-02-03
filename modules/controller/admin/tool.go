@@ -7,7 +7,7 @@
 package admin
 
 import (
-	"github.com/Aiicy/AiicyCMS/modules/logic"
+	"github.com/Aiicy/AiicyDS/modules/logic"
 
 	"github.com/labstack/echo"
 )

@@ -9,14 +9,14 @@ package logic
 import (
 	"errors"
 	"math/rand"
-	"github.com/Aiicy/AiicyCMS/model"
+	"github.com/Aiicy/AiicyDS/model"
 	"net/url"
 	"strconv"
 	"strings"
 	"time"
-	"github.com/Aiicy/AiicyCMS/modules/util"
+	"github.com/Aiicy/AiicyDS/modules/util"
 
-	. "github.com/Aiicy/AiicyCMS/modules/db"
+	. "github.com/Aiicy/AiicyDS/modules/db"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/lunny/html2md"

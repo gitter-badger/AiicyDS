@@ -9,12 +9,12 @@ package logic
 import (
 	"fmt"
 	"html/template"
-	"github.com/Aiicy/AiicyCMS/model"
+	"github.com/Aiicy/AiicyDS/model"
 	"net/url"
 	"regexp"
 	"time"
 
-	. "github.com/Aiicy/AiicyCMS/modules/db"
+	. "github.com/Aiicy/AiicyDS/modules/db"
 
 	"github.com/fatih/structs"
 	"github.com/polaris1119/goutils"

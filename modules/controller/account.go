@@ -8,16 +8,16 @@ package controller
 
 import (
 	"html/template"
-	"github.com/Aiicy/AiicyCMS/modules/middleware"
-	"github.com/Aiicy/AiicyCMS/modules/logic"
-	"github.com/Aiicy/AiicyCMS/model"
+	"github.com/Aiicy/AiicyDS/modules/middleware"
+	"github.com/Aiicy/AiicyDS/modules/logic"
+	"github.com/Aiicy/AiicyDS/model"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
-	"github.com/Aiicy/AiicyCMS/modules/util"
+	"github.com/Aiicy/AiicyDS/modules/util"
 
-	. "github.com/Aiicy/AiicyCMS/modules/http"
+	. "github.com/Aiicy/AiicyDS/modules/http"
 
 	"github.com/dchest/captcha"
 	"github.com/gorilla/sessions"

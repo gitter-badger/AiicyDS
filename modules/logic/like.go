@@ -10,11 +10,11 @@ import (
 	"errors"
 	"fmt"
 
-	. "github.com/Aiicy/AiicyCMS/modules/db"
+	. "github.com/Aiicy/AiicyDS/modules/db"
 
 	"golang.org/x/net/context"
 
-	"github.com/Aiicy/AiicyCMS/model"
+	"github.com/Aiicy/AiicyDS/model"
 )
 
 type LikeLogic struct{}

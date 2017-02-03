@@ -9,10 +9,10 @@ package controller
 // 喜欢系统
 
 import (
-	"github.com/Aiicy/AiicyCMS/modules/middleware"
-	"github.com/Aiicy/AiicyCMS/modules/logic"
-	"github.com/Aiicy/AiicyCMS/model"
-	"github.com/Aiicy/AiicyCMS/modules/util"
+	"github.com/Aiicy/AiicyDS/modules/middleware"
+	"github.com/Aiicy/AiicyDS/modules/logic"
+	"github.com/Aiicy/AiicyDS/model"
+	"github.com/Aiicy/AiicyDS/modules/util"
 
 	"github.com/labstack/echo"
 	"github.com/polaris1119/goutils"

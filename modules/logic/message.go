@@ -8,12 +8,12 @@ package logic
 
 import (
 	"html/template"
-	"github.com/Aiicy/AiicyCMS/model"
+	"github.com/Aiicy/AiicyDS/model"
 	"strconv"
 	"strings"
-	"github.com/Aiicy/AiicyCMS/modules/util"
+	"github.com/Aiicy/AiicyDS/modules/util"
 
-	. "github.com/Aiicy/AiicyCMS/modules/db"
+	. "github.com/Aiicy/AiicyDS/modules/db"
 
 	"github.com/go-xorm/xorm"
 	"github.com/polaris1119/goutils"

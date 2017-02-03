@@ -18,9 +18,9 @@ import (
 	"github.com/polaris1119/goutils"
 	"github.com/polaris1119/logger"
 
-	. "github.com/Aiicy/AiicyCMS/modules/db"
-	"github.com/Aiicy/AiicyCMS/model"
-	"github.com/Aiicy/AiicyCMS/modules/util"
+	. "github.com/Aiicy/AiicyDS/modules/db"
+	"github.com/Aiicy/AiicyDS/model"
+	"github.com/Aiicy/AiicyDS/modules/util"
 )
 
 type EmailLogic struct{}
@@ -30,7 +30,7 @@ var DefaultEmail = EmailLogic{}
 // SendMail 发送电子邮件
 func (EmailLogic) SendMail(subject, content string, tos []string) error {
 	emailConfig, _ := config.ConfigFile.GetSection("email")
-	message := `From: AiicyCMS | Golang中文社区 | Go语言学习园地<` + emailConfig["from_email"] + `>
+	message := `From: AiicyDS | Golang中文社区 | Go语言学习园地<` + emailConfig["from_email"] + `>
 To: ` + strings.Join(tos, ",") + `
 Subject: ` + subject + `
 Content-Type: text/html;charset=UTF-8
@@ -62,11 +62,11 @@ func (self EmailLogic) SendActivateMail(email, uuid string) {
 	activeUrl := fmt.Sprintf("http://%s/account/activate?param=%s", domain, param)
 
 	content := `
-尊敬的AiicyCMS用户：<br/><br/>
-感谢您选择了AiicyCMS，请点击下面的地址激活你在AiicyCMS的帐号（有效期4小时）：<br/><br/>
+尊敬的AiicyDS用户：<br/><br/>
+感谢您选择了AiicyDS，请点击下面的地址激活你在AiicyDS的帐号（有效期4小时）：<br/><br/>
 <a href="` + activeUrl + `">` + activeUrl + `</a><br/><br/>
-<div style="text-align:right;">&copy;2012-2016 studygolang.com AiicyCMS | Golang中文社区 | Go语言学习园地</div>`
-	self.SendMail("AiicyCMS帐号激活邮件", content, []string{email})
+<div style="text-align:right;">&copy;2012-2016 studygolang.com AiicyDS | Golang中文社区 | Go语言学习园地</div>`
+	self.SendMail("AiicyDS帐号激活邮件", content, []string{email})
 }
 
 func (EmailLogic) genActivateSign(email, uuid string, ts int64) string {
@@ -79,7 +79,7 @@ func (EmailLogic) genActivateSign(email, uuid string, ts int64) string {
 func (self EmailLogic) SendResetpwdMail(email, uuid string) {
 	domain := config.ConfigFile.MustValue("global", "domain")
 	content := `您好，` + email + `,<br/><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;我们的系统收到一个请求，说您希望通过电子邮件重新设置您在 <a href="http://` + domain + `">AiicyCMS</a> 的密码。您可以点击下面的链接重设密码：<br/><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;我们的系统收到一个请求，说您希望通过电子邮件重新设置您在 <a href="http://` + domain + `">AiicyDS</a> 的密码。您可以点击下面的链接重设密码：<br/><br/>
 
 &nbsp;&nbsp;&nbsp;&nbsp;http://` + domain + `/account/resetpwd?code=` + uuid + ` <br/><br/>
 
@@ -87,8 +87,8 @@ func (self EmailLogic) SendResetpwdMail(email, uuid string) {
 
 如果您有任何疑问，可以回复这封邮件向我们提问。谢谢！<br/><br/>
 
-<div style="text-align:right;">&copy;2013-` + time.Now().Format("2006") + ` studygolang.com  AiicyCMS | Golang中文社区 | Go语言学习园地</div>`
-	self.SendMail("【AiicyCMS】重设密码 ", content, []string{email})
+<div style="text-align:right;">&copy;2013-` + time.Now().Format("2006") + ` studygolang.com  AiicyDS | Golang中文社区 | Go语言学习园地</div>`
+	self.SendMail("【AiicyDS】重设密码 ", content, []string{email})
 }
 
 // 自定义模板函数

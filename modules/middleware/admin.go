@@ -7,7 +7,7 @@
 package middleware
 
 import (
-	"github.com/Aiicy/AiicyCMS/model"
+	"github.com/Aiicy/AiicyDS/model"
 	"net/http"
 
 	"github.com/labstack/echo"

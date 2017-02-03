@@ -7,7 +7,7 @@
 package model
 
 import (
-	"github.com/Aiicy/AiicyCMS/modules/db"
+	"github.com/Aiicy/AiicyDS/modules/db"
 	"fmt"
 	"html/template"
 	"regexp"

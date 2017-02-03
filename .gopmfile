@@ -1,5 +1,5 @@
 [deps]
-github.com/Aiicy/AiicyCMS = branch:master
+github.com/Aiicy/AiicyDS = branch:master
 github.com/facebookgo/grace = branch:master
 github.com/fatih/structs = branch:master
 github.com/labstack/echo = branch:v2

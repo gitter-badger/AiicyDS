@@ -30,7 +30,7 @@ fi
 
 BUILD="`git symbolic-ref HEAD | cut -b 12-`-`git rev-parse HEAD`"
 
-gom build -ldflags "-X global.Build="$BUILD -o bin/AiicyCMS
+gom build -ldflags "-X global.Build="$BUILD -o bin/AiicyDS
 
 #go install server/indexer
 #go install server/crawler

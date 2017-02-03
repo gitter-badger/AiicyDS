@@ -10,8 +10,8 @@ import (
 	"net/url"
 	"strings"
 
-	. "github.com/Aiicy/AiicyCMS/modules/db"
-	"github.com/Aiicy/AiicyCMS/model"
+	. "github.com/Aiicy/AiicyDS/modules/db"
+	"github.com/Aiicy/AiicyDS/model"
 
 	"golang.org/x/net/context"
 

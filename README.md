@@ -1,4 +1,4 @@
-AiicyCMS(with go)
+AiicyDS(with go)
 ===========
 ##Environment
 * go version >=1.6
@@ -19,11 +19,11 @@ export GOPATH=~/.go
 
 * get source
 
-  [zip file](https://github.com/Aiicy/AiicyCMS/archive/go.zip)
+  [zip file](https://github.com/Aiicy/AiicyDS/archive/go.zip)
   
   or
 ```
-git clone https://github.com/Aiicy/AiicyCMS.git -b master
+git clone https://github.com/Aiicy/AiicyDS.git -b master
 ```
 * get gom
 ```
@@ -42,7 +42,7 @@ go get github.com/polaris1119/gvt
 ./install.sh
 ```
 
-##RUN AiicyCMS
+##RUN AiicyDS
 on Linux
 ```
 ./start.sh

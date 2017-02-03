@@ -7,15 +7,15 @@
 package middleware
 
 import (
-	"github.com/Aiicy/AiicyCMS/modules/db"
-	"github.com/Aiicy/AiicyCMS/modules/logic"
-	"github.com/Aiicy/AiicyCMS/model"
+	"github.com/Aiicy/AiicyDS/modules/db"
+	"github.com/Aiicy/AiicyDS/modules/logic"
+	"github.com/Aiicy/AiicyDS/model"
 	"net/http"
 	"net/url"
 	"strings"
-	"github.com/Aiicy/AiicyCMS/modules/util"
+	"github.com/Aiicy/AiicyDS/modules/util"
 
-	. "github.com/Aiicy/AiicyCMS/modules/http"
+	. "github.com/Aiicy/AiicyDS/modules/http"
 
 	"github.com/gorilla/context"
 	"github.com/labstack/echo"

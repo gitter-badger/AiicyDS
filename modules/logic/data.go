@@ -12,8 +12,8 @@ import (
 
 	"github.com/polaris1119/logger"
 
-	. "github.com/Aiicy/AiicyCMS/modules/db"
-	"github.com/Aiicy/AiicyCMS/model"
+	. "github.com/Aiicy/AiicyDS/modules/db"
+	"github.com/Aiicy/AiicyDS/model"
 )
 
 // 常驻内存数据（多实例部署时，数据同步会有问题）

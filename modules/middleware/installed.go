@@ -7,7 +7,7 @@
 package middleware
 
 import (
-	"github.com/Aiicy/AiicyCMS/modules/db"
+	"github.com/Aiicy/AiicyDS/modules/db"
 	"net/http"
 	"strings"
 

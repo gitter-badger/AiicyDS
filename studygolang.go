@@ -7,11 +7,11 @@
 package main
 
 import (
-	"github.com/Aiicy/AiicyCMS/modules/db"
-	"github.com/Aiicy/AiicyCMS/modules/logic"
-	"github.com/Aiicy/AiicyCMS/modules/global"
-	"github.com/Aiicy/AiicyCMS/modules/controller"
-	"github.com/Aiicy/AiicyCMS/modules/controller/admin"
+	"github.com/Aiicy/AiicyDS/modules/db"
+	"github.com/Aiicy/AiicyDS/modules/logic"
+	"github.com/Aiicy/AiicyDS/modules/global"
+	"github.com/Aiicy/AiicyDS/modules/controller"
+	"github.com/Aiicy/AiicyDS/modules/controller/admin"
 
 	"io/ioutil"
 	"math/rand"
@@ -22,7 +22,7 @@ import (
 
 	. "github.com/polaris1119/config"
 
-	pwm "github.com/Aiicy/AiicyCMS/modules/middleware"
+	pwm "github.com/Aiicy/AiicyDS/modules/middleware"
 
 	"github.com/fatih/structs"
 	"github.com/labstack/echo"
