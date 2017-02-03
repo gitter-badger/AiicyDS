@@ -24,19 +24,102 @@ import (
 	"github.com/urfave/cli"
 	"gopkg.in/macaron.v1"
 
-	"github.com/peachdocs/peach/models"
-	"github.com/peachdocs/peach/modules/middleware"
-	"github.com/peachdocs/peach/modules/setting"
-	"github.com/peachdocs/peach/routers"
+
+	"github.com/Aiicy/AiicyCMS/models"
+	"github.com/Aiicy/AiicyCMS/modules/middleware"
+	"github.com/Aiicy/AiicyCMS/modules/setting"
+	"github.com/Aiicy/AiicyCMS/routers"
 )
 
 var Web = cli.Command{
 	Name:   "web",
-	Usage:  "Start Peach web server",
+	Usage:  "Start AiicyCMS web server",
 	Action: runWeb,
 	Flags: []cli.Flag{
 		stringFlag("config, c", "custom/app.ini", "Custom configuration file path"),
 	},
+}
+
+// newMacaron initializes Macaron instance.
+func newMacaron() *macaron.Macaron {
+	m := macaron.New()
+	if !setting.DisableRouterLog {
+		m.Use(macaron.Logger())
+	}
+	m.Use(macaron.Recovery())
+	if setting.EnableGzip {
+		m.Use(gzip.Gziper())
+	}
+	if setting.Protocol == setting.SCHEME_FCGI {
+		m.SetURLPrefix(setting.AppSubUrl)
+	}
+	m.Use(macaron.Static(
+		path.Join(setting.StaticRootPath, "public"),
+		macaron.StaticOptions{
+			SkipLogging: setting.DisableRouterLog,
+		},
+	))
+	m.Use(macaron.Static(
+		setting.AvatarUploadPath,
+		macaron.StaticOptions{
+			Prefix:      "avatars",
+			SkipLogging: setting.DisableRouterLog,
+		},
+	))
+
+	funcMap := template.NewFuncMap()
+	m.Use(macaron.Renderer(macaron.RenderOptions{
+		Directory:         path.Join(setting.StaticRootPath, "templates"),
+		AppendDirectories: []string{path.Join(setting.CustomPath, "templates")},
+		Funcs:             funcMap,
+		IndentJSON:        macaron.Env != macaron.PROD,
+	}))
+	mailer.InitMailRender(path.Join(setting.StaticRootPath, "templates/mail"),
+		path.Join(setting.CustomPath, "templates/mail"), funcMap)
+
+	localeNames, err := bindata.AssetDir("conf/locale")
+	if err != nil {
+		log.Fatal(4, "Fail to list locale files: %v", err)
+	}
+	localFiles := make(map[string][]byte)
+	for _, name := range localeNames {
+		localFiles[name] = bindata.MustAsset("conf/locale/" + name)
+	}
+	m.Use(i18n.I18n(i18n.Options{
+		SubURL:          setting.AppSubUrl,
+		Files:           localFiles,
+		CustomDirectory: path.Join(setting.CustomPath, "conf/locale"),
+		Langs:           setting.Langs,
+		Names:           setting.Names,
+		DefaultLang:     "en-US",
+		Redirect:        true,
+	}))
+	m.Use(cache.Cacher(cache.Options{
+		Adapter:       setting.CacheAdapter,
+		AdapterConfig: setting.CacheConn,
+		Interval:      setting.CacheInterval,
+	}))
+	m.Use(captcha.Captchaer(captcha.Options{
+		SubURL: setting.AppSubUrl,
+	}))
+	m.Use(session.Sessioner(setting.SessionConfig))
+	m.Use(csrf.Csrfer(csrf.Options{
+		Secret:     setting.SecretKey,
+		Cookie:     setting.CSRFCookieName,
+		SetCookie:  true,
+		Header:     "X-Csrf-Token",
+		CookiePath: setting.AppSubUrl,
+	}))
+	m.Use(toolbox.Toolboxer(m, toolbox.Options{
+		HealthCheckFuncs: []*toolbox.HealthCheckFuncDesc{
+			&toolbox.HealthCheckFuncDesc{
+				Desc: "Database connection",
+				Func: models.Ping,
+			},
+		},
+	}))
+	m.Use(context.Contexter())
+	return m
 }
 
 func runWeb(ctx *cli.Context) {
@@ -48,16 +131,19 @@ func runWeb(ctx *cli.Context) {
 
 	log.Info("Peach %s", setting.AppVer)
 
-	m := macaron.New()
+	m := newMacaron()
+
 	m.Use(macaron.Logger())
 	m.Use(macaron.Recovery())
 	m.Use(macaron.Statics(macaron.StaticOptions{
 		SkipLogging: setting.ProdMode,
 	}, "custom/public", "public", models.HTMLRoot))
+/*
 	m.Use(i18n.I18n(i18n.Options{
 		Files:       setting.Docs.Locales,
 		DefaultLang: setting.Docs.Langs[0],
 	}))
+*/
 	tplDir := "templates"
 	if setting.Page.UseCustomTpl {
 		tplDir = "custom/templates"
@@ -65,7 +151,8 @@ func runWeb(ctx *cli.Context) {
 	m.Use(pongo2.Pongoer(pongo2.Options{
 		Directory: tplDir,
 	}))
-	m.Use(middleware.Contexter())
+
+	//m.Use(middleware.Contexter())
 
 	m.Get("/", routers.Home)
 	m.Get("/docs", routers.Docs)
