@@ -1,4 +1,3 @@
-gom 'github.com/Aiicy/AiicyDS', :commit => '535b3d46fd1af00edb7ba0973b72e13fecce6777'
 gom 'github.com/PuerkitoBio/goquery', :commit => '3cb3b8656883c2cc3deb9c643d93ea6e5157e425'
 gom 'github.com/Unknwon/goconfig', :commit => '87a46d97951ee1ea20ed3b24c25646a79e87ba5d'
 gom 'github.com/andybalholm/cascadia', :commit => '349dd0209470eabd9514242c688c403c0926d266'

@@ -14,6 +14,7 @@ pid
 data
 sitemap
 assets
+release
 
 # Architecture specific extensions/prefixes
 *.[568vq]
@@ -43,3 +44,6 @@ welcome.png
 *.json
 
 .DS_Store
+
+*.zip
+*.md5sum

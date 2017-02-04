@@ -1,9 +1,9 @@
-LDFLAGS += -X "github.com/gogits/gogs/modules/setting.BuildTime=$(shell date -u '+%Y-%m-%d %I:%M:%S %Z')"
-LDFLAGS += -X "github.com/gogits/gogs/modules/setting.BuildGitHash=$(shell git rev-parse HEAD)"
+LDFLAGS += -X "modules/setting.BuildTime=$(shell git symbolic-ref HEAD | cut -b 12-`-`git rev-parse HEAD)"
+#LDFLAGS += -X "github.com/gogits/gogs/modules/setting.BuildGitHash=$(shell git rev-parse HEAD)"
 
 DATA_FILES := $(shell find conf | sed 's/ /\\ /g')
 LESS_FILES := $(wildcard public/less/gogs.less public/less/_*.less)
-GENERATED  := modules/bindata/bindata.go public/css/gogs.css
+GENERATED  := src/modules/bindata/bindata.go
 
 OS := $(shell uname)
 
@@ -11,7 +11,7 @@ TAGS = ""
 BUILD_FLAGS = "-v"
 
 RELEASE_ROOT = "release"
-RELEASE_GOGS = "release/gogs"
+RELEASE_GOGS = "release/AiicyDS"
 NOW = $(shell date -u '+%Y%m%d%I%M%S')
 GOVET = go tool vet -composites=false -methods=false -structtags=false
 
@@ -26,8 +26,8 @@ check: test
 dist: release
 
 govet:
-	$(GOVET) gogs.go
-	$(GOVET) models modules routers
+	$(GOVET) studygolang.go graceful_unix.go graceful_windows.go
+	$(GOVET) models modules 
 
 build: $(GENERATED)
 	go install $(BUILD_FLAGS) -ldflags '$(LDFLAGS)' -tags '$(TAGS)'

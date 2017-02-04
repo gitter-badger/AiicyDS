@@ -15,25 +15,9 @@ if [ ! -d log ]; then
 	mkdir log
 fi
 
-if [  ! -d "vendor/src" ]; then
-	mkdir vendor/src
-fi
-
-
-if [ -d vendor/github.com ]; then
-	mv vendor/github.com vendor/src
-fi
-
-if [ -d vendor/golang.org ]; then
-	mv vendor/golang.org vendor/src
-fi
-
 BUILD="`git symbolic-ref HEAD | cut -b 12-`-`git rev-parse HEAD`"
 
-gom build -ldflags "-X global.Build="$BUILD -o bin/AiicyDS
-
-#go install server/indexer
-#go install server/crawler
+go build -o bin/AiicyDS  -ldflags "-X modules/global.Build="$BUILD server
 
 export GOPATH="$OLDGOPATH"
 export PATH="$OLDPATH"
