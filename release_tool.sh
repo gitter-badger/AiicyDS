@@ -35,6 +35,7 @@ function CopyFiles() {
 	cp -rp ./template/ ${RELEASE_ROOT}/
 	cp start.sh ${RELEASE_ROOT}/
 	cp stop.sh ${RELEASE_ROOT}/
+	cp AiicyDSInitDB.py ${RELEASE_ROOT}/
 	cp LICENSE ${RELEASE_ROOT}/license/
 }
 

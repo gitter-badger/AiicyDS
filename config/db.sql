@@ -225,7 +225,6 @@ CREATE TABLE IF NOT EXISTS `resource_category` (
   PRIMARY KEY (`catid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '资源分类表';
 
-ALTER TABLE `resource_category` AUTO_INCREMENT = 1;
 
 CREATE TABLE IF NOT EXISTS `articles` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,

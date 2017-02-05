@@ -10,6 +10,10 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"os"
+	"strings"
+	"bufio"
+	"io"
 
 	. "github.com/polaris1119/config"
 
@@ -68,11 +72,12 @@ func TestDB() error {
 		fmt.Println("ping db error:", err)
 		return ConnectDBErr
 	}
-
+	/*
 	_, err = egnine.Exec("use " + mysqlConfig["dbname"])
 	if err != nil {
+	*/
 		fmt.Println("use db error:", err)
-		_, err = egnine.Exec("CREATE DATABASE " + mysqlConfig["dbname"] + " DEFAULT CHARACTER SET " + mysqlConfig["charset"])
+		_, err = egnine.Exec("CREATE DATABASE IF NOT EXISTS " + mysqlConfig["dbname"] + " DEFAULT CHARACTER SET " + mysqlConfig["charset"])
 		if err != nil {
 			fmt.Println("create database error:", err)
 
@@ -80,8 +85,9 @@ func TestDB() error {
 		}
 
 		fmt.Println("create database successfully!")
+	/*
 	}
-
+	*/
 	// 初始化 MasterDB
 	Init()
 
@@ -146,3 +152,49 @@ func initEngine() error {
 func StdMasterDB() *sql.DB {
 	return MasterDB.DB().DB
 }
+
+func readFromSql(fileName string)(out []string, err error) {
+
+	f, err := os.Open(fileName)
+	if err != nil {
+		return out, err
+	}
+	buf := bufio.NewReader(f)
+	for {
+		line, err := buf.ReadString('\n')
+		line = strings.TrimSpace(line)
+		out = append(out, line)
+		if err != nil {
+			if err == io.EOF {
+				return out,nil
+			}
+			return out ,err
+		}
+	}
+	return out, nil
+}
+
+func SourceSql(filename string) error {
+
+	mysqlConfig, err := ConfigFile.GetSection("mysql")
+
+	sqlSlice, err := readFromSql(filename)
+	if err != nil {
+		return err
+	}
+
+	MasterDB.Exec("USE " + mysqlConfig["dbname"] + ";")
+
+	MasterDB.Exec("SET SQL_MODE='ALLOW_INVALID_DATES';")
+	for index, v := range sqlSlice {
+		fmt.Println(index, v)
+		_, err1 := MasterDB.Exec(v)
+		if err1 != nil {
+			err = err1
+		}
+	}
+
+	return err
+}
+	
+	

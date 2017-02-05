@@ -42,6 +42,12 @@ go get github.com/polaris1119/gvt
 ./install.sh
 ```
 
+## Init the database before you run the AiicyDS
+* install python-mysqldb
+```shell
+$apt-get install -y python-mysqldb
+$./AiicyDSInitDB.py
+```
 ##RUN AiicyDS
 on Linux
 ```

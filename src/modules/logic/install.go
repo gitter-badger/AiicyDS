@@ -9,6 +9,7 @@ import (
 	"golang.org/x/net/context"
 
 	. "modules/db"
+	//"fmt"
 )
 
 type InstallLogic struct{}
@@ -19,6 +20,14 @@ func (InstallLogic) CreateTable(ctx context.Context) error {
 	objLog := GetLogger(ctx)
 
 	dbFile := config.ROOT + "/config/db.sql"
+
+/*
+	err := SourceSql(dbFile)
+	if err != nil {
+		objLog.Errorln("create table error:", err)
+	}
+*/
+	
 	buf, err := ioutil.ReadFile(dbFile)
 
 	if err != nil {
@@ -42,6 +51,7 @@ func (InstallLogic) CreateTable(ctx context.Context) error {
 		}
 	}
 
+
 	return err
 }
 
@@ -59,6 +69,14 @@ func (InstallLogic) InitTable(ctx context.Context) error {
 	}
 
 	dbFile := config.ROOT + "/config/init.sql"
+	/*
+	err = SourceSql(dbFile)
+	if err != nil {
+		objLog.Errorln("create table error:", err)
+	}
+	*/
+
+
 	buf, err := ioutil.ReadFile(dbFile)
 	if err != nil {
 		objLog.Errorln("init table, read init file error:", err)
