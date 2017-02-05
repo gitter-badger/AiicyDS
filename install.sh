@@ -17,7 +17,9 @@ fi
 
 BUILD="`git symbolic-ref HEAD | cut -b 12-`-`git rev-parse HEAD`"
 
-go build -o bin/AiicyDS  -ldflags "-X modules/global.Build="$BUILD server
+go build -o bin/AiicyDS  -ldflags "-X modules/global.Build="$BUILD server/AiicyDS
+go build -o bin/crawler  server/crawler
+go build -o bin/indexer  server/indexer
 
 export GOPATH="$OLDGOPATH"
 export PATH="$OLDPATH"
