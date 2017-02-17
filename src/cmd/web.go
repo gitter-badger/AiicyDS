@@ -20,7 +20,6 @@ import (
 	"log"
 
 	"./../modules/setting"
-	"./../routers"
 )
 
 var CmdWeb = cli.Command{
@@ -162,10 +161,8 @@ func runWeb(ctx *cli.Context) error {
 	if ctx.IsSet("config") {
 		setting.CustomConf = ctx.String("config")
 	}
-	setting.NewContext()
-	models.NewContext()
-
-	log.Info("Peach %s", setting.AppVer)
+	routers.GlobalInit()
+	checkVersion()
 
 	m := newMacaron()
 
