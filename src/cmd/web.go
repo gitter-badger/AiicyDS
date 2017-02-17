@@ -191,6 +191,8 @@ func runWeb(ctx *cli.Context) error {
 	//m.Use(middleware.Contexter())
 
 	m.Get("/", routers.Home)
+	m.Combo("/install", routers.InstallInit).Get(routers.Install).
+		Post(bindIgnErr(auth.InstallForm{}), routers.InstallPost)
 	m.Get("/docs", routers.Docs)
 	m.Get("/docs/images/*", routers.DocsStatic)
 	m.Get("/docs/*", routers.Protect, routers.Docs)
