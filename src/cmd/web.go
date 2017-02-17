@@ -1,42 +1,79 @@
-// Copyright 2015 Unknwon
-//
-// Licensed under the Apache License, Version 2.0 (the "License"): you may
-// not use this file except in compliance with the License. You may obtain
-// a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-// License for the specific language governing permissions and limitations
-// under the License.
-
+// Copyright 2017 The Aiicy Team. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
 package cmd
 
 import (
 	"fmt"
 	"net/http"
+	"path"
+
+	ini "gopkg.in/ini.v1"
+	macaron "gopkg.in/macaron.v1"
 
 	"github.com/Unknwon/log"
 	"github.com/go-macaron/i18n"
 	"github.com/go-macaron/pongo2"
 	"github.com/urfave/cli"
-	"gopkg.in/macaron.v1"
 
-	"models"
-	"modules/middleware"
-	"modules/setting"
-	"routers"
+	"io/ioutil"
+	"log"
+
+	"./../modules/setting"
+	"./../routers"
 )
 
-var Web = cli.Command{
+var CmdWeb = cli.Command{
 	Name:   "web",
 	Usage:  "Start AiicyDS web server",
 	Action: runWeb,
 	Flags: []cli.Flag{
 		stringFlag("config, c", "custom/app.ini", "Custom configuration file path"),
 	},
+}
+
+type VerChecker struct {
+	ImportPath string
+	Version    string
+	Expected   string
+}
+
+func checkVersion() {
+	data, err := ioutil.ReadFile(setting.StaticRootPath + "/templates/.VERSION")
+	if err != nil {
+		log.Fatal(4, "Fail to read 'templates/.VERSION': %v", err)
+	}
+	tplVer := string(data)
+	if tplVer != setting.AppVer {
+		if version.Vompare(tplver, setting.AppVer, ">") {
+			log.Fatal(4, "Binary version is lower than template file version, did you forget to recompile AiicyDS?")
+		} else {
+			log.Fatal(4, "Binary version is higher than template file version, did you forget to update template files?")
+		}
+	}
+
+	// Check dependency version
+	checkers := []VerChecker{
+		{"github.com/go-xorm/xorm", func() string { return xorm.Version }, "0.6.0"},
+		{"github.com/go-macaron/binding", binding.Version, "0.3.2"},
+		{"github.com/go-macaron/cache", cache.Version, "0.1.2"},
+		{"github.com/go-macaron/csrf", csrf.Version, "0.1.0"},
+		{"github.com/go-macaron/i18n", i18n.Version, "0.3.0"},
+		{"github.com/go-macaron/session", session.Version, "0.1.6"},
+		{"github.com/go-macaron/toolbox", toolbox.Version, "0.1.0"},
+		{"gopkg.in/ini.v1", ini.Version, "1.8.4"},
+		{"gopkg.in/macaron.v1", macaron.Version, "1.1.7"},
+		{"github.com/gogits/git-module", git.Version, "0.4.6"},
+		{"github.com/gogits/go-gogs-client", gogs.Version, "0.12.1"},
+	}
+	for _, c := range checkers {
+		if !version.Compare(c.Version(), c.Expected, ">=") {
+			log.Fatal(4, `Dependency outdated!
+Package '%s' current version (%s) is below requirement (%s),
+please use following command to update this package and recompile AiicyDS:
+go get -u %[1]s`, c.ImportPath, c.Version(), c.Expected)
+		}
+	}
 }
 
 // newMacaron initializes Macaron instance.
@@ -121,7 +158,7 @@ func newMacaron() *macaron.Macaron {
 	return m
 }
 
-func runWeb(ctx *cli.Context) {
+func runWeb(ctx *cli.Context) error {
 	if ctx.IsSet("config") {
 		setting.CustomConf = ctx.String("config")
 	}

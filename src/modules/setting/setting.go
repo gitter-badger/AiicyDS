@@ -17,8 +17,6 @@ package setting
 import (
 	"github.com/Unknwon/com"
 	"github.com/Unknwon/log"
-	"gopkg.in/ini.v1"
-	"gopkg.in/macaron.v1"
 
 	"github.com/Aiicy/AiicyDS/modules/bindata"
 )
@@ -45,11 +43,12 @@ func (t DocType) IsRemote() bool {
 }
 
 var (
-	CustomConf = "custom/app.ini"
-
-	AppVer   string
-	ProdMode bool
-	HTTPPort int
+	// Server settings
+	CustomConf     = "custom/app.ini"
+	StaticRootPath string
+	AppVer         string
+	ProdMode       bool
+	HTTPPort       int
 
 	Site struct {
 		Name   string
