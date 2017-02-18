@@ -5,7 +5,7 @@ package main
 
 import "os"
 import "github.com/urfave/cli"
-import "./src/cmd"
+import "github.com/Aiicy/AiicyDS/src/cmd"
 
 const APP_VER = "0.1.0"
 

@@ -26,7 +26,6 @@ import (
 	"github.com/gogits/gogs/modules/log"
 	"github.com/gogits/gogs/modules/mailer"
 	"github.com/gogits/gogs/modules/markdown"
-	"github.com/gogits/gogs/modules/template/highlight"
 	"github.com/gogits/gogs/modules/user"
 )
 

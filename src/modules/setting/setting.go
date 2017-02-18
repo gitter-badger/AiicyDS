@@ -5,12 +5,11 @@
 package setting
 
 import (
+	"github.com/Aiicy/AiicyDS/src/modules/bindata"
 	"github.com/Unknwon/com"
 	"github.com/Unknwon/log"
 	ini "gopkg.in/ini.v1"
 	macaron "gopkg.in/macaron.v1"
-
-	"github.com/Aiicy/AiicyDS/modules/bindata"
 )
 
 type NavbarItem struct {

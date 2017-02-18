@@ -4,7 +4,7 @@
 // http://studygolang.com
 // Author: polaris	polaris@studygolang.com
 
-package model
+package models
 
 // 用户收藏（用户可以收藏文章、话题、资源等）
 type Favorite struct {

@@ -4,7 +4,7 @@
 // http://studygolang.com
 // Author: polaris	polaris@studygolang.com
 
-package model
+package models
 
 // 角色分界点：roleid小于该值，则没有管理权限
 const AdminMinRoleId int = 6

@@ -11,15 +11,21 @@ import (
 	ini "gopkg.in/ini.v1"
 	macaron "gopkg.in/macaron.v1"
 
+	"github.com/Aiicy/AiicyDS/src/modules/auth"
+	"github.com/Aiicy/AiicyDS/src/modules/bindata"
+	"github.com/Aiicy/AiicyDS/src/modules/context"
+	"github.com/Aiicy/AiicyDS/src/modules/mailer"
+	"github.com/Aiicy/AiicyDS/src/modules/template"
 	"github.com/Unknwon/log"
 	"github.com/go-macaron/i18n"
 	"github.com/go-macaron/pongo2"
+	"github.com/go-xorm/xorm"
 	"github.com/urfave/cli"
+	log "gopkg.in/clog.v1"
 
 	"io/ioutil"
-	"log"
 
-	"./../modules/setting"
+	"github.com/Aiicy/AiicyDS/src/modules/setting"
 )
 
 var CmdWeb = cli.Command{
@@ -62,8 +68,6 @@ func checkVersion() {
 		{"github.com/go-macaron/toolbox", toolbox.Version, "0.1.0"},
 		{"gopkg.in/ini.v1", ini.Version, "1.8.4"},
 		{"gopkg.in/macaron.v1", macaron.Version, "1.1.7"},
-		{"github.com/gogits/git-module", git.Version, "0.4.6"},
-		{"github.com/gogits/go-gogs-client", gogs.Version, "0.12.1"},
 	}
 	for _, c := range checkers {
 		if !version.Compare(c.Version(), c.Expected, ">=") {
