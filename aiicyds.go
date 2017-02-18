@@ -1,18 +1,6 @@
-// Copyright 2015 Unknwon
-//
-// Licensed under the Apache License, Version 2.0 (the "License"): you may
-// not use this file except in compliance with the License. You may obtain
-// a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-// License for the specific language governing permissions and limitations
-// under the License.
-
-// Peach is a web server for multi-language, real-time synchronization and searchable documentation.
+// Copyright 2017 The Aiicy Team. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
 package main
 
 import (
@@ -25,7 +13,7 @@ import (
 	"github.com/Aiicy/AiicyDS/modules/setting"
 )
 
-const APP_VER = "0.9.2.1205"
+const APP_VER = "0.0.1"
 
 func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
@@ -34,11 +22,11 @@ func init() {
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "Peach"
-	app.Usage = "Modern Documentation Server"
+	app.Name = "AiicyDS"
+	app.Usage = "AiicyDS: A distributed web system."
 	app.Version = APP_VER
-	app.Author = "Unknwon"
-	app.Email = "u@gogs.io"
+	app.Author = "Aiicy Team"
+	app.Email = "admin@aiicy.com"
 	app.Commands = []cli.Command{
 		cmd.Web,
 		cmd.New,

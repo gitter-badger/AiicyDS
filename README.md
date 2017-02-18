@@ -1,17 +1,67 @@
-# Peach [![Build Status](https://travis-ci.org/Aiicy/AiicyDS.svg?branch=master)](https://travis-ci.org/Aiicy/AiicyDS)
+AiicyDS(with go)
+===========
+##Environment
+* go version >=1.6
+* system Linux or windows
 
-![](https://github.com/Aiicy/AiicyDS/raw/master/public/img/favicon.ico)
+## Install golang on Linux amd64
+```
+wget -c https://storage.googleapis.com/golang/go1.8rc3.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.8rc3.linux-amd64.tar.gz
+nano ~/.bashrc
+```
+Write and save the following
+```
+export PATH=$PATH:/usr/local/go/bin
+export GOPATH=~/.go
+```
+## How to build
 
-Peach is a web server for multi-language, real-time synchronization and searchable documentation.
+* get source
 
-#### Current version: 0.9.2
+  [zip file](https://github.com/Aiicy/AiicyDS/archive/go.zip)
+  
+  or
+```
+git clone https://github.com/Aiicy/AiicyDS.git -b master
+```
+* get gom
+```
+go get github.com/mattn/gom
+```
+* get gvt
+```
+go get github.com/polaris1119/gvt
+```
+* install the dep package
+```
+./getpkg.sh
+```
+* build the exec
+```
+./install.sh
+```
 
-## Getting Help
+## Init the database before you run the AiicyDS
+* install python-mysqldb
+```shell
+$apt-get install -y python-mysqldb
+$./AiicyDSInitDB.py
+```
+##RUN AiicyDS
+on Linux
+```
+./start.sh
+```
+on windows
+```
+./start.bat
+```
+##Test
+assess http://127.0.0.1:8088 with brower
 
-- [Getting Started](http://aiicydsdocs.org/docs/intro/getting_started)
-- [Ship with Docker](https://github.com/Aiicy/AiicyDS/tree/master/docker)
-- QQ 用户群：254120107
-
-## License
-
-This project is under Apache v2 License. See the [LICENSE](LICENSE) file for the full license text.
+## go-bindata
+```shell
+	$go get -u github.com/jteeuwen/go-bindata/go-bindata
+	$./bindata.sh
+```

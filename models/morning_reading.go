@@ -4,7 +4,7 @@
 // http://studygolang.com
 // Author: polaris	polaris@studygolang.com
 
-package model
+package models
 
 import (
 	"strings"

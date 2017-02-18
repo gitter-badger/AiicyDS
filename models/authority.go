@@ -4,7 +4,7 @@
 // http://studygolang.com
 // Author: polaris	polaris@studygolang.com
 
-package model
+package models
 
 // 权限信息
 type Authority struct {

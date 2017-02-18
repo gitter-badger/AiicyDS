@@ -1,16 +1,6 @@
-// Copyright 2015 Unknwon
-//
-// Licensed under the Apache License, Version 2.0 (the "License"): you may
-// not use this file except in compliance with the License. You may obtain
-// a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-// License for the specific language governing permissions and limitations
-// under the License.
+// Copyright 2017 The Aiicy Team. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
 
 package cmd
 
@@ -18,13 +8,13 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/Aiicy/AiicyDS/models"
 	"github.com/Unknwon/log"
 	"github.com/go-macaron/i18n"
 	"github.com/go-macaron/pongo2"
 	"github.com/urfave/cli"
 	"gopkg.in/macaron.v1"
 
-	"github.com/Aiicy/AiicyDS/models"
 	"github.com/Aiicy/AiicyDS/modules/middleware"
 	"github.com/Aiicy/AiicyDS/modules/setting"
 	"github.com/Aiicy/AiicyDS/routers"
@@ -32,7 +22,7 @@ import (
 
 var Web = cli.Command{
 	Name:   "web",
-	Usage:  "Start Peach web server",
+	Usage:  "Start AiicyDS web server",
 	Action: runWeb,
 	Flags: []cli.Flag{
 		stringFlag("config, c", "custom/app.ini", "Custom configuration file path"),
@@ -79,5 +69,5 @@ func runWeb(ctx *cli.Context) {
 
 	listenAddr := fmt.Sprintf("0.0.0.0:%d", setting.HTTPPort)
 	log.Info("%s Listen on %s", setting.Site.Name, listenAddr)
-	log.Fatal("Fail to start Peach: %v", http.ListenAndServe(listenAddr, m))
+	log.Fatal("Fail to start AiicyDS: %v", http.ListenAndServe(listenAddr, m))
 }
