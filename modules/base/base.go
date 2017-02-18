@@ -15,6 +15,13 @@ type (
 	TplName string
 )
 
+func ShortSha(sha1 string) string {
+	if len(sha1) > 10 {
+		return sha1[:10]
+	}
+	return sha1
+}
+
 // GetRandomString generate random string by specify chars.
 func GetRandomString(n int) (string, error) {
 	const alphanum = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"

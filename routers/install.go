@@ -5,6 +5,7 @@
 package routers
 
 import (
+	"context"
 	"errors"
 	"net/mail"
 	"os"
@@ -19,15 +20,13 @@ import (
 	"gopkg.in/ini.v1"
 	"gopkg.in/macaron.v1"
 
-	"github.com/Aiict/AiicyDS/modules/auth"
-	"github.com/Aiict/AiicyDS/modules/base"
-	"github.com/Aiict/AiicyDS/modules/context"
-	"github.com/Aiict/AiicyDS/modules/cron"
-	"github.com/Aiict/AiicyDS/modules/mailer"
-	"github.com/Aiict/AiicyDS/modules/setting"
-	"github.com/Aiict/AiicyDS/modules/template/highlight"
-	"github.com/Aiict/AiicyDS/modules/user"
 	"github.com/Aiicy/AiicyDS/models"
+	"github.com/Aiicy/AiicyDS/modules/auth"
+	"github.com/Aiicy/AiicyDS/modules/base"
+	"github.com/Aiicy/AiicyDS/modules/mailer"
+	"github.com/Aiicy/AiicyDS/modules/setting"
+	"github.com/Aiicy/AiicyDS/modules/template/highlight"
+	"github.com/Aiicy/AiicyDS/modules/user"
 )
 
 const (
@@ -61,11 +60,7 @@ func GlobalInit() {
 		highlight.NewContext()
 		models.HasEngine = true
 
-		models.LoadRepoConfig()
-		models.NewRepoContext()
-
 		// Booting long running goroutines.
-		cron.NewContext()
 		models.InitSyncMirrors()
 		models.InitDeliverHooks()
 		models.InitTestPullRequests()
@@ -118,7 +113,6 @@ func Install(ctx *context.Context) {
 
 	// Application general settings
 	form.AppName = setting.AppName
-	form.RepoRootPath = setting.RepoRootPath
 
 	// Note(unknwon): it's hard for Windows users change a running user,
 	// 	so just use current one if config says default.
@@ -212,14 +206,6 @@ func InstallPost(ctx *context.Context, form auth.InstallForm) {
 		return
 	}
 
-	// Test repository root path.
-	form.RepoRootPath = strings.Replace(form.RepoRootPath, "\\", "/", -1)
-	if err := os.MkdirAll(form.RepoRootPath, os.ModePerm); err != nil {
-		ctx.Data["Err_RepoRootPath"] = true
-		ctx.RenderWithErr(ctx.Tr("install.invalid_repo_path", err), INSTALL, &form)
-		return
-	}
-
 	// Test log root path.
 	form.LogRootPath = strings.Replace(form.LogRootPath, "\\", "/", -1)
 	if err := os.MkdirAll(form.LogRootPath, os.ModePerm); err != nil {
@@ -289,7 +275,6 @@ func InstallPost(ctx *context.Context, form auth.InstallForm) {
 	cfg.Section("database").Key("PATH").SetValue(models.DbCfg.Path)
 
 	cfg.Section("").Key("APP_NAME").SetValue(form.AppName)
-	cfg.Section("repository").Key("ROOT").SetValue(form.RepoRootPath)
 	cfg.Section("").Key("RUN_USER").SetValue(form.RunUser)
 	cfg.Section("server").Key("DOMAIN").SetValue(form.Domain)
 	cfg.Section("server").Key("HTTP_PORT").SetValue(form.HTTPPort)

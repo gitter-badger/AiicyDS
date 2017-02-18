@@ -1,16 +1,6 @@
-// Copyright 2015 Unknwon
-//
-// Licensed under the Apache License, Version 2.0 (the "License"): you may
-// not use this file except in compliance with the License. You may obtain
-// a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-// License for the specific language governing permissions and limitations
-// under the License.
+// Copyright 2017 The Aiicy Team. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
 
 package setting
 
@@ -47,9 +37,12 @@ func (t DocType) IsRemote() bool {
 var (
 	CustomConf = "custom/app.ini"
 
-	AppVer   string
-	ProdMode bool
-	HTTPPort int
+	AppVer         string
+	AppUrl         string
+	AppSubUrl      string
+	AppSubUrlDepth int // Number of slashes
+	ProdMode       bool
+	HTTPPort       int
 
 	Site struct {
 		Name   string
@@ -88,6 +81,15 @@ var (
 		// Only used for languages are not en-US or zh-CN to bypass error panic.
 		Locales map[string][]byte
 	}
+	// Security settings
+	InstallLock bool
+
+	// Markdown sttings
+	Markdown struct {
+		EnableHardLineBreak bool
+		CustomURLSchemes    []string `ini:"CUSTOM_URL_SCHEMES"`
+		FileExtensions      []string
+	}
 
 	Extension struct {
 		EnableEditPage       bool
@@ -102,6 +104,39 @@ var (
 	}
 
 	Cfg *ini.File
+)
+
+var Service struct {
+	ActiveCodeLives                int
+	ResetPwdCodeLives              int
+	RegisterEmailConfirm           bool
+	DisableRegistration            bool
+	ShowRegistrationButton         bool
+	RequireSignInView              bool
+	EnableNotifyMail               bool
+	EnableReverseProxyAuth         bool
+	EnableReverseProxyAutoRegister bool
+	EnableCaptcha                  bool
+}
+
+// Mailer represents mail service.
+type Mailer struct {
+	QueueLength           int
+	Name                  string
+	Host                  string
+	From                  string
+	FromEmail             string
+	User, Passwd          string
+	DisableHelo           bool
+	HeloHostname          string
+	SkipVerify            bool
+	UseCertificate        bool
+	CertFile, KeyFile     string
+	EnableHTMLAlternative bool
+}
+
+var (
+	MailService *Mailer
 )
 
 func NewContext() {
