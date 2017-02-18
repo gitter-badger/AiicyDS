@@ -15,53 +15,13 @@ Write and save the following
 export PATH=$PATH:/usr/local/go/bin
 export GOPATH=~/.go
 ```
-## How to build
+## Install AiicyDS
+```bash
+go get https://github.com/Aiicy/AiicyDS
 
-* get source
+cd $GOPATH/src/github.com/Aiicy/AiicyDS
 
-  [zip file](https://github.com/Aiicy/AiicyDS/archive/go.zip)
-  
-  or
-```
-git clone https://github.com/Aiicy/AiicyDS.git -b master
-```
-* get gom
-```
-go get github.com/mattn/gom
-```
-* get gvt
-```
-go get github.com/polaris1119/gvt
-```
-* install the dep package
-```
-./getpkg.sh
-```
-* build the exec
-```
-./install.sh
-```
+go build
 
-## Init the database before you run the AiicyDS
-* install python-mysqldb
-```shell
-$apt-get install -y python-mysqldb
-$./AiicyDSInitDB.py
-```
-##RUN AiicyDS
-on Linux
-```
-./start.sh
-```
-on windows
-```
-./start.bat
-```
-##Test
-assess http://127.0.0.1:8088 with brower
-
-## go-bindata
-```shell
-	$go get -u github.com/jteeuwen/go-bindata/go-bindata
-	$./bindata.sh
+./aiicyds
 ```
