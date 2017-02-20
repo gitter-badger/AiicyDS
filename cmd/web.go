@@ -9,13 +9,14 @@ import (
 	"net/http"
 
 	"github.com/Aiicy/AiicyDS/models"
+	"github.com/Aiicy/AiicyDS/modules/context"
 	"github.com/Unknwon/log"
 	"github.com/go-macaron/i18n"
 	"github.com/go-macaron/pongo2"
+	"github.com/gogits/gogs/modules/auth"
 	"github.com/urfave/cli"
 	"gopkg.in/macaron.v1"
 
-	"github.com/Aiicy/AiicyDS/modules/middleware"
 	"github.com/Aiicy/AiicyDS/modules/setting"
 	"github.com/Aiicy/AiicyDS/routers"
 )
@@ -55,15 +56,11 @@ func runWeb(ctx *cli.Context) {
 	m.Use(pongo2.Pongoer(pongo2.Options{
 		Directory: tplDir,
 	}))
-	m.Use(middleware.Contexter())
+	m.Use(context.Contexter())
 
 	m.Get("/", routers.Home)
-	m.Get("/docs", routers.Docs)
-	m.Get("/docs/images/*", routers.DocsStatic)
-	m.Get("/docs/*", routers.Protect, routers.Docs)
-	m.Post("/hook", routers.Hook)
-	m.Get("/search", routers.Search)
-	m.Get("/*", routers.Pages)
+	m.Combo("/install", routers.InstallInit).Get(routers.Install).
+		Post(bindIgnErr(auth.InstallForm{}), routers.InstallPost)
 
 	m.NotFound(routers.NotFound)
 

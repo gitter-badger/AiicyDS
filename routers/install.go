@@ -25,7 +25,6 @@ import (
 	"github.com/Aiicy/AiicyDS/modules/base"
 	"github.com/Aiicy/AiicyDS/modules/mailer"
 	"github.com/Aiicy/AiicyDS/modules/setting"
-	"github.com/Aiicy/AiicyDS/modules/template/highlight"
 	"github.com/Aiicy/AiicyDS/modules/user"
 )
 
@@ -37,8 +36,6 @@ func checkRunMode() {
 	if setting.ProdMode {
 		macaron.Env = macaron.PROD
 		macaron.ColorLog = false
-	} else {
-		git.Debug = true
 	}
 	log.Info("Run Mode: %s", strings.Title(macaron.Env))
 }
@@ -57,7 +54,6 @@ func GlobalInit() {
 	NewServices()
 
 	if setting.InstallLock {
-		highlight.NewContext()
 		models.HasEngine = true
 
 		// Booting long running goroutines.
