@@ -29,7 +29,6 @@ func main() {
 	app.Email = "admin@aiicy.com"
 	app.Commands = []cli.Command{
 		cmd.Web,
-		cmd.New,
 	}
 	app.Flags = append(app.Flags, []cli.Flag{}...)
 	app.Run(os.Args)
