@@ -23,5 +23,10 @@ cd $GOPATH/src/github.com/Aiicy/AiicyDS
 
 go build
 
-./aiicyds
+./AiicyDS -h
+```
+
+## Run AiicyDS
+```
+./AiicyDS web
 ```
