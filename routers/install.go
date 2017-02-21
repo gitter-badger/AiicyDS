@@ -5,7 +5,6 @@
 package routers
 
 import (
-	"context"
 	"errors"
 	"net/mail"
 	"os"
@@ -23,6 +22,7 @@ import (
 	"github.com/Aiicy/AiicyDS/models"
 	"github.com/Aiicy/AiicyDS/modules/auth"
 	"github.com/Aiicy/AiicyDS/modules/base"
+	"github.com/Aiicy/AiicyDS/modules/context"
 	"github.com/Aiicy/AiicyDS/modules/mailer"
 	"github.com/Aiicy/AiicyDS/modules/setting"
 	"github.com/Aiicy/AiicyDS/modules/user"
@@ -55,11 +55,6 @@ func GlobalInit() {
 
 	if setting.InstallLock {
 		models.HasEngine = true
-
-		// Booting long running goroutines.
-		models.InitSyncMirrors()
-		models.InitDeliverHooks()
-		models.InitTestPullRequests()
 	}
 	if models.EnableSQLite3 {
 		log.Info("SQLite3 Supported")

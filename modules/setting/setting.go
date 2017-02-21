@@ -11,12 +11,13 @@ import (
 	"strings"
 
 	"github.com/Unknwon/com"
-	"github.com/Unknwon/log"
+	"github.com/go-macaron/session"
+	"github.com/gogits/gogs/modules/user"
+	log "gopkg.in/clog.v1"
 	"gopkg.in/ini.v1"
 	"gopkg.in/macaron.v1"
 
 	"github.com/Aiicy/AiicyDS/modules/bindata"
-	log "gopkg.in/clog.v1"
 )
 
 type NavbarItem struct {
@@ -42,13 +43,37 @@ func (t DocType) IsRemote() bool {
 
 var (
 	CustomConf = "custom/app.ini"
+	// Build information should only be set by -ldflags.
+	BuildTime string
+
+	// Picture settings
+	DisableGravatar       bool
+	EnableFederatedAvatar bool
+
+	// Log settings
+	LogRootPath string
+	LogModes    []string
+	LogConfigs  []interface{}
+
+	// Cache settings
+	CacheAdapter  string
+	CacheInterval int
+	CacheConn     string
+
+	// Session settings
+	SessionConfig  session.Options
+	CSRFCookieName = "_csrf"
 
 	AppVer         string
+	AppName        string
 	AppUrl         string
 	AppSubUrl      string
 	AppSubUrlDepth int // Number of slashes
-	ProdMode       bool
-	HTTPPort       int
+
+	// Server settings
+	Domain             string
+	HTTPAddr, HTTPPort string
+	OfflineMode        bool
 
 	Site struct {
 		Name   string
@@ -90,12 +115,30 @@ var (
 	// Security settings
 	InstallLock bool
 
+	// Webhook settings
+	Webhook struct {
+		QueueLength    int
+		DeliverTimeout int
+		SkipTLSVerify  bool
+		Types          []string
+		PagingNum      int
+	}
+
 	// Markdown sttings
 	Markdown struct {
 		EnableHardLineBreak bool
 		CustomURLSchemes    []string `ini:"CUSTOM_URL_SCHEMES"`
 		FileExtensions      []string
 	}
+
+	// Other settings
+	SupportMiniWinService bool
+
+	// Global setting objects
+	CustomPath string // Custom directory path
+	ProdMode   bool
+	RunUser    string
+	IsWindows  bool
 
 	Extension struct {
 		EnableEditPage       bool
@@ -112,18 +155,30 @@ var (
 	Cfg *ini.File
 )
 
+// IsRunUserMatchCurrentUser returns false if configured run user does not match
+// actual user that runs the app. The first return value is the actual user name.
+// This check is ignored under Windows since SSH remote login is not the main
+// method to login on Windows.
+func IsRunUserMatchCurrentUser(runUser string) (string, bool) {
+	if IsWindows {
+		return "", true
+	}
+
+	currentUser := user.CurrentUsername()
+	return currentUser, runUser == currentUser
+}
+
 func NewContext() {
-	log.Prefix = "[Peach]"
 
 	if !com.IsFile(CustomConf) {
-		log.Fatal("No custom configuration found: 'custom/app.ini'")
+		log.Fatal(4, "No custom configuration found: 'custom/app.ini'")
 	}
 	sources := []interface{}{bindata.MustAsset("conf/app.ini"), CustomConf}
 
 	var err error
 	Cfg, err = macaron.SetConfig(sources[0], sources[1:]...)
 	if err != nil {
-		log.Fatal("Fail to load config: %v", err)
+		log.Fatal(4, "Fail to load config: %v", err)
 	}
 
 	sec := Cfg.Section("")
@@ -133,7 +188,8 @@ func NewContext() {
 		macaron.ColorLog = false
 	}
 
-	HTTPPort = sec.Key("HTTP_PORT").MustInt(5555)
+	HTTPPort = sec.Key("HTTP_PORT").MustString("3000")
+	OfflineMode = sec.Key("OFFLINE_MODE").MustBool()
 
 	sec = Cfg.Section("site")
 	Site.Name = sec.Key("NAME").MustString("Peach Server")
@@ -230,7 +286,6 @@ func newService() {
 func newLogService() {
 	if len(BuildTime) > 0 {
 		log.Trace("Build Time: %s", BuildTime)
-		log.Trace("Build Git Hash: %s", BuildGitHash)
 	}
 
 	// Because we always create a console logger as primary logger before all settings are loaded,

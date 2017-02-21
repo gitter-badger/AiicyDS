@@ -5,8 +5,11 @@
 package base
 
 import (
+	"crypto/md5"
 	"crypto/rand"
+	"encoding/hex"
 	"math/big"
+	"strings"
 )
 
 const DOC_URL = "https://github.com/gogits/go-gogs-client/wiki"
@@ -48,4 +51,13 @@ func randomInt(max *big.Int) (int, error) {
 	}
 
 	return int(rand.Int64()), nil
+}
+
+// HashEmail hashes email address to MD5 string.
+// https://en.gravatar.com/site/implement/hash/
+func HashEmail(email string) string {
+	email = strings.ToLower(strings.TrimSpace(email))
+	h := md5.New()
+	h.Write([]byte(email))
+	return hex.EncodeToString(h.Sum(nil))
 }
