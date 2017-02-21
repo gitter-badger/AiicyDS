@@ -13,8 +13,8 @@ import (
 	"gopkg.in/macaron.v1"
 
 	"github.com/Aiicy/AiicyDS/modules/base"
+	"github.com/Aiicy/AiicyDS/modules/markdown"
 	"github.com/Aiicy/AiicyDS/modules/setting"
-	"github.com/gogits/gogs/modules/markdown"
 )
 
 const (

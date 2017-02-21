@@ -13,9 +13,9 @@ import (
 	"path"
 	"strings"
 
+	"github.com/Aiicy/AiicyDS/modules/setting"
 	"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"
-	"github.com/gogits/gogs/modules/setting"
 )
 
 // Engine represents a xorm engine or session.
@@ -64,8 +64,6 @@ func LoadConfigs() {
 		setting.UsePostgreSQL = true
 	case "mssql":
 		setting.UseMSSQL = true
-	case "tidb":
-		setting.UseTiDB = true
 	}
 	DbCfg.Host = sec.Key("HOST").String()
 	DbCfg.Name = sec.Key("NAME").String()
@@ -155,4 +153,8 @@ func NewTestEngine(x *xorm.Engine) (err error) {
 
 	x.SetMapper(core.GonicMapper{})
 	return x.StoreEngine("InnoDB").Sync2(tables...)
+}
+
+func Ping() error {
+	return x.Ping()
 }

@@ -102,8 +102,11 @@ type User struct {
 	// 非用户表中的信息，为了方便放在这里
 	Roleids   []int    `xorm:"-"`
 	Rolenames []string `xorm:"-"`
+
 	// Permissions
-	IsAdmin bool
+	IsActive      bool // Activate primary email
+	IsAdmin       bool
+	ProhibitLogin bool
 }
 
 func (this *User) TableName() string {

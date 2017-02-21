@@ -6,9 +6,14 @@ package auth
 
 import (
 	"reflect"
+	"strings"
 
 	"github.com/Unknwon/com"
 )
+
+func IsAPIPath(url string) bool {
+	return strings.HasPrefix(url, "/api/")
+}
 
 // AssignForm assign form values back to the template data.
 func AssignForm(form interface{}, data map[string]interface{}) {

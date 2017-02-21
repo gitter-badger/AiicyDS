@@ -11,12 +11,12 @@ import (
 	"gopkg.in/macaron.v1"
 
 	"github.com/Aiicy/AiicyDS/models"
+	"github.com/Aiicy/AiicyDS/modules/auth"
 	"github.com/Aiicy/AiicyDS/modules/base"
 	"github.com/Aiicy/AiicyDS/modules/setting"
 	"github.com/go-macaron/cache"
 	"github.com/go-macaron/csrf"
 	"github.com/go-macaron/session"
-	"github.com/gogits/gogs/modules/auth"
 	log "gopkg.in/clog.v1"
 )
 

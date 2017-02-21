@@ -10,14 +10,31 @@ import (
 	"path"
 	"strings"
 
+	"github.com/Aiicy/AiicyDS/modules/user"
 	"github.com/Unknwon/com"
 	"github.com/go-macaron/session"
-	"github.com/gogits/gogs/modules/user"
 	log "gopkg.in/clog.v1"
 	"gopkg.in/ini.v1"
 	"gopkg.in/macaron.v1"
 
 	"github.com/Aiicy/AiicyDS/modules/bindata"
+	"github.com/gogits/go-libravatar"
+)
+
+type Scheme string
+
+const (
+	SCHEME_HTTP        Scheme = "http"
+	SCHEME_HTTPS       Scheme = "https"
+	SCHEME_FCGI        Scheme = "fcgi"
+	SCHEME_UNIX_SOCKET Scheme = "unix"
+)
+
+type LandingPage string
+
+const (
+	LANDING_PAGE_HOME    LandingPage = "/"
+	LANDING_PAGE_EXPLORE LandingPage = "/explore"
 )
 
 type NavbarItem struct {
@@ -47,13 +64,19 @@ var (
 	BuildTime string
 
 	// Picture settings
+	AvatarUploadPath      string
+	GravatarSource        string
 	DisableGravatar       bool
 	EnableFederatedAvatar bool
+	LibravatarService     *libravatar.Libravatar
 
 	// Log settings
 	LogRootPath string
 	LogModes    []string
 	LogConfigs  []interface{}
+
+	// Time settings
+	TimeFormat string
 
 	// Cache settings
 	CacheAdapter  string
@@ -71,9 +94,14 @@ var (
 	AppSubUrlDepth int // Number of slashes
 
 	// Server settings
+	Protocol           Scheme
 	Domain             string
 	HTTPAddr, HTTPPort string
 	OfflineMode        bool
+	DisableRouterLog   bool
+	StaticRootPath     string
+	EnableGzip         bool
+	LandingPageURL     LandingPage
 
 	Site struct {
 		Name   string
@@ -113,7 +141,15 @@ var (
 		Locales map[string][]byte
 	}
 	// Security settings
-	InstallLock bool
+	InstallLock    bool
+	SecretKey      string
+	CookieUserName string
+
+	// Database settings
+	UseSQLite3    bool
+	UseMySQL      bool
+	UsePostgreSQL bool
+	UseMSSQL      bool
 
 	// Webhook settings
 	Webhook struct {
@@ -131,8 +167,33 @@ var (
 		FileExtensions      []string
 	}
 
+	// UI settings
+	UI struct {
+		ExplorePagingNum   int
+		IssuePagingNum     int
+		FeedMaxCommitNum   int
+		ThemeColorMetaTag  string
+		MaxDisplayFileSize int64
+
+		Admin struct {
+			UserPagingNum   int
+			RepoPagingNum   int
+			NoticePagingNum int
+			OrgPagingNum    int
+		} `ini:"ui.admin"`
+		User struct {
+			RepoPagingNum int
+		} `ini:"ui.user"`
+	}
+
+	// I18n settings
+	Langs, Names []string
+
 	// Other settings
 	SupportMiniWinService bool
+
+	// template seeting
+	ShowFooterTemplateLoadTime bool
 
 	// Global setting objects
 	CustomPath string // Custom directory path
