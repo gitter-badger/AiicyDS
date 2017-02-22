@@ -5,10 +5,15 @@
 package cmd
 
 import (
+	"crypto/tls"
 	"fmt"
 	"io/ioutil"
+	"net"
 	"net/http"
+	"net/http/fcgi"
+	"os"
 	"path"
+	"strings"
 
 	"github.com/Aiicy/AiicyDS/models"
 	"github.com/Aiicy/AiicyDS/modules/auth"
@@ -25,7 +30,6 @@ import (
 	"github.com/go-macaron/session"
 	"github.com/go-macaron/toolbox"
 	"github.com/go-xorm/xorm"
-	"github.com/gogits/gogs/routers/user"
 	"github.com/mcuadros/go-version"
 	"github.com/urfave/cli"
 	log "gopkg.in/clog.v1"
@@ -171,7 +175,7 @@ func newMacaron() *macaron.Macaron {
 	return m
 }
 
-func runWeb(ctx *cli.Context) {
+func runWeb(ctx *cli.Context) error {
 	if ctx.IsSet("config") {
 		setting.CustomConf = ctx.String("config")
 	}
@@ -180,18 +184,79 @@ func runWeb(ctx *cli.Context) {
 
 	m := newMacaron()
 
-	reqSignIn := context.Toggle(&context.ToggleOptions{SignInRequired: true})
-
 	bindIgnErr := binding.BindIgnErr
 
 	m.Get("/", routers.Home)
 	m.Combo("/install", routers.InstallInit).Get(routers.Install).
 		Post(bindIgnErr(auth.InstallForm{}), routers.InstallPost)
-	m.Get("/^:type(issues|pulls)$", reqSignIn, user.Issues)
 
+	// robots.txt
+	m.Get("/robots.txt", func(ctx *context.Context) {
+		if setting.HasRobotsTxt {
+			ctx.ServeFileContent(path.Join(setting.CustomPath, "robots.txt"))
+		} else {
+			ctx.Error(404)
+		}
+	})
+
+	// Not found handler.
 	m.NotFound(routers.NotFound)
 
-	listenAddr := fmt.Sprintf("0.0.0.0:%d", setting.HTTPPort)
-	log.Info("%s Listen on %s", setting.Site.Name, listenAddr)
-	log.Fatal(4, "Fail to start AiicyDS: %v", http.ListenAndServe(listenAddr, m))
+	// Flag for port number in case first time run conflict.
+	if ctx.IsSet("port") {
+		setting.AppUrl = strings.Replace(setting.AppUrl, setting.HTTPPort, ctx.String("port"), 1)
+		setting.HTTPPort = ctx.String("port")
+	}
+
+	var listenAddr string
+	if setting.Protocol == setting.SCHEME_UNIX_SOCKET {
+		listenAddr = fmt.Sprintf("%s", setting.HTTPAddr)
+	} else {
+		listenAddr = fmt.Sprintf("%s:%s", setting.HTTPAddr, setting.HTTPPort)
+	}
+	log.Info("Listen: %v://%s%s", setting.Protocol, listenAddr, setting.AppSubUrl)
+
+	var err error
+	switch setting.Protocol {
+	case setting.SCHEME_HTTP:
+		err = http.ListenAndServe(listenAddr, m)
+	case setting.SCHEME_HTTPS:
+		server := &http.Server{Addr: listenAddr, TLSConfig: &tls.Config{
+			MinVersion:               tls.VersionTLS10,
+			CurvePreferences:         []tls.CurveID{tls.CurveP521, tls.CurveP384, tls.CurveP256},
+			PreferServerCipherSuites: true,
+			CipherSuites: []uint16{
+				tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+				tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256, // Required for HTTP/2 support.
+				tls.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
+				tls.TLS_RSA_WITH_AES_256_CBC_SHA,
+			},
+		}, Handler: m}
+		err = server.ListenAndServeTLS(setting.CertFile, setting.KeyFile)
+	case setting.SCHEME_FCGI:
+		err = fcgi.Serve(nil, m)
+	case setting.SCHEME_UNIX_SOCKET:
+		os.Remove(listenAddr)
+
+		var listener *net.UnixListener
+		listener, err = net.ListenUnix("unix", &net.UnixAddr{listenAddr, "unix"})
+		if err != nil {
+			break // Handle error after switch
+		}
+
+		// FIXME: add proper implementation of signal capture on all protocols
+		// execute this on SIGTERM or SIGINT: listener.Close()
+		if err = os.Chmod(listenAddr, os.FileMode(setting.UnixSocketPermission)); err != nil {
+			log.Fatal(4, "Failed to set permission of unix socket: %v", err)
+		}
+		err = http.Serve(listener, m)
+	default:
+		log.Fatal(4, "Invalid protocol: %s", setting.Protocol)
+	}
+
+	if err != nil {
+		log.Fatal(4, "Fail to start server: %v", err)
+	}
+
+	return nil
 }

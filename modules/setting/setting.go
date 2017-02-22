@@ -94,14 +94,16 @@ var (
 	AppSubUrlDepth int // Number of slashes
 
 	// Server settings
-	Protocol           Scheme
-	Domain             string
-	HTTPAddr, HTTPPort string
-	OfflineMode        bool
-	DisableRouterLog   bool
-	StaticRootPath     string
-	EnableGzip         bool
-	LandingPageURL     LandingPage
+	Protocol             Scheme
+	Domain               string
+	HTTPAddr, HTTPPort   string
+	OfflineMode          bool
+	DisableRouterLog     bool
+	CertFile, KeyFile    string
+	StaticRootPath       string
+	EnableGzip           bool
+	LandingPageURL       LandingPage
+	UnixSocketPermission uint32
 
 	Site struct {
 		Name   string
@@ -196,10 +198,11 @@ var (
 	ShowFooterTemplateLoadTime bool
 
 	// Global setting objects
-	CustomPath string // Custom directory path
-	ProdMode   bool
-	RunUser    string
-	IsWindows  bool
+	CustomPath   string // Custom directory path
+	ProdMode     bool
+	RunUser      string
+	IsWindows    bool
+	HasRobotsTxt bool
 
 	Extension struct {
 		EnableEditPage       bool
