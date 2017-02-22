@@ -65,7 +65,7 @@ func checkVersion() {
 	tplVer := string(data)
 	if tplVer != setting.AppVer {
 		if version.Compare(tplVer, setting.AppVer, ">") {
-			log.Fatal(4, "Binary version is lower than template file version, did you forget to recompile Gogs?")
+			log.Fatal(4, "Binary version is lower than template file version, did you forget to recompile AiicyDS?")
 		} else {
 			log.Fatal(4, "Binary version is higher than template file version, did you forget to update template files?")
 		}
@@ -87,7 +87,7 @@ func checkVersion() {
 		if !version.Compare(c.Version(), c.Expected, ">=") {
 			log.Fatal(4, `Dependency outdated!
 Package '%s' current version (%s) is below requirement (%s),
-please use following command to update this package and recompile Gogs:
+please use following command to update this package and recompile AiicyDS:
 go get -u %[1]s`, c.ImportPath, c.Version(), c.Expected)
 		}
 	}

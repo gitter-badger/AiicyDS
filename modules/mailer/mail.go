@@ -52,7 +52,7 @@ func InitMailRender(dir, appendDir string, funcMap []template.FuncMap) {
 }
 
 func SendTestMail(email string) error {
-	return gomail.Send(&Sender{}, NewMessage([]string{email}, "Gogs Test Email!", "Gogs Test Email!").Message)
+	return gomail.Send(&Sender{}, NewMessage([]string{email}, "AiicyDS Test Email!", "AiicyDS Test Email!").Message)
 }
 
 /*

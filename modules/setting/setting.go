@@ -6,16 +6,19 @@ package setting
 
 import (
 	"net/mail"
+	"net/url"
 	"os"
 	"path"
+	"path/filepath"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/Aiicy/AiicyDS/modules/user"
 	"github.com/Unknwon/com"
 	"github.com/go-macaron/session"
 	log "gopkg.in/clog.v1"
 	"gopkg.in/ini.v1"
-	"gopkg.in/macaron.v1"
 
 	"github.com/Aiicy/AiicyDS/modules/bindata"
 	"github.com/gogits/go-libravatar"
@@ -75,6 +78,13 @@ var (
 	LogModes    []string
 	LogConfigs  []interface{}
 
+	// Attachment settings
+	AttachmentPath         string
+	AttachmentAllowedTypes string
+	AttachmentMaxSize      int64
+	AttachmentMaxFiles     int
+	AttachmentEnabled      bool
+
 	// Time settings
 	TimeFormat string
 
@@ -87,16 +97,20 @@ var (
 	SessionConfig  session.Options
 	CSRFCookieName = "_csrf"
 
+	// App settings
 	AppVer         string
 	AppName        string
 	AppUrl         string
 	AppSubUrl      string
 	AppSubUrlDepth int // Number of slashes
+	AppPath        string
+	AppDataPath    string
 
 	// Server settings
 	Protocol             Scheme
 	Domain               string
 	HTTPAddr, HTTPPort   string
+	LocalURL             string
 	OfflineMode          bool
 	DisableRouterLog     bool
 	CertFile, KeyFile    string
@@ -104,6 +118,10 @@ var (
 	EnableGzip           bool
 	LandingPageURL       LandingPage
 	UnixSocketPermission uint32
+
+	HTTP struct {
+		AccessControlAllowOrigin string
+	}
 
 	Site struct {
 		Name   string
@@ -143,9 +161,13 @@ var (
 		Locales map[string][]byte
 	}
 	// Security settings
-	InstallLock    bool
-	SecretKey      string
-	CookieUserName string
+	InstallLock          bool
+	SecretKey            string
+	LogInRememberDays    int
+	CookieUserName       string
+	CookieRememberName   string
+	CookieSecure         bool
+	ReverseProxyAuthUser string
 
 	// Database settings
 	UseSQLite3    bool
@@ -169,6 +191,11 @@ var (
 		FileExtensions      []string
 	}
 
+	// Admin settings
+	Admin struct {
+		DisableRegularOrgCreation bool
+	}
+
 	// UI settings
 	UI struct {
 		ExplorePagingNum   int
@@ -190,8 +217,11 @@ var (
 
 	// I18n settings
 	Langs, Names []string
+	dateLangs    map[string]string
 
 	// Other settings
+	ShowFooterBranding    bool
+	ShowFooterVersion     bool
 	SupportMiniWinService bool
 
 	// template seeting
@@ -219,6 +249,26 @@ var (
 	Cfg *ini.File
 )
 
+// WorkDir returns absolute path of work directory.
+func WorkDir() (string, error) {
+	wd := os.Getenv("AIICY_WORK_DIR")
+	if len(wd) > 0 {
+		return wd, nil
+	}
+
+	i := strings.LastIndex(AppPath, "/")
+	if i == -1 {
+		return AppPath, nil
+	}
+	return AppPath[:i], nil
+}
+
+func forcePathSeparator(path string) {
+	if strings.Contains(path, "\\") {
+		log.Fatal(2, "Do not use '\\' or '\\\\' in paths, instead, please use '/' in all places")
+	}
+}
+
 // IsRunUserMatchCurrentUser returns false if configured run user does not match
 // actual user that runs the app. The first return value is the actual user name.
 // This check is ignored under Windows since SSH remote login is not the main
@@ -232,94 +282,205 @@ func IsRunUserMatchCurrentUser(runUser string) (string, bool) {
 	return currentUser, runUser == currentUser
 }
 
+// NewContext initializes configuration context.
+// NOTE: do not print any log except error.
 func NewContext() {
-
-	if !com.IsFile(CustomConf) {
-		log.Fatal(4, "No custom configuration found: 'custom/app.ini'")
-	}
-	sources := []interface{}{bindata.MustAsset("conf/app.ini"), CustomConf}
-
-	var err error
-	Cfg, err = macaron.SetConfig(sources[0], sources[1:]...)
+	workDir, err := WorkDir()
 	if err != nil {
-		log.Fatal(4, "Fail to load config: %v", err)
+		log.Fatal(2, "Fail t o get work directory: %v", err)
 	}
 
-	sec := Cfg.Section("")
-	if sec.Key("RUN_MODE").String() == "prod" {
-		ProdMode = true
-		macaron.Env = macaron.PROD
-		macaron.ColorLog = false
+	Cfg, err = ini.Load(bindata.MustAsset("conf/app.ini"))
+	if err != nil {
+		log.Fatal(2, "Fail to parse 'conf/app.ini': %v", err)
 	}
 
-	HTTPPort = sec.Key("HTTP_PORT").MustString("3000")
+	CustomPath = os.Getenv("AIICY_CUSTOM")
+	if len(CustomPath) == 0 {
+		CustomPath = workDir + "/custom"
+	}
+
+	if len(CustomConf) == 0 {
+		CustomConf = CustomPath + "/conf/app.ini"
+	}
+
+	if com.IsFile(CustomConf) {
+		if err = Cfg.Append(CustomConf); err != nil {
+			log.Fatal(2, "Fail to load custom conf '%s': %v", CustomConf, err)
+		}
+	} else {
+		log.Warn("Custom config '%s' not found, ignore this if you're running first time", CustomConf)
+	}
+	Cfg.NameMapper = ini.AllCapsUnderscore
+
+	homeDir, err := com.HomeDir()
+	if err != nil {
+		log.Fatal(2, "Fail to get home directory: %v", err)
+	}
+	homeDir = strings.Replace(homeDir, "\\", "/", -1)
+
+	LogRootPath = Cfg.Section("log").Key("ROOT_PATH").MustString(path.Join(workDir, "log"))
+	forcePathSeparator(LogRootPath)
+
+	sec := Cfg.Section("server")
+	AppName = Cfg.Section("").Key("APP_NAME").MustString("AiicyDS")
+	AppUrl = sec.Key("ROOT_URL").MustString("http://localhost:8080/")
+	if AppUrl[len(AppUrl)-1] != '/' {
+		AppUrl += "/"
+	}
+	// Check if has app suburl.
+	url, err := url.Parse(AppUrl)
+	if err != nil {
+		log.Fatal(2, "Invalid ROOT_URL '%s': %s", AppUrl, err)
+	}
+
+	// Suburl should start with '/' and end without '/', such as '/{subpath}'.
+	// This value is empty if site does not have sub-url.
+	AppSubUrl = strings.TrimSuffix(url.Path, "/")
+	AppSubUrlDepth = strings.Count(AppSubUrl, "/")
+
+	Protocol = SCHEME_HTTP
+	if sec.Key("PROTOCOL").String() == "https" {
+		Protocol = SCHEME_HTTPS
+		CertFile = sec.Key("CERT_FILE").String()
+		KeyFile = sec.Key("KEY_FILE").String()
+	} else if sec.Key("PROTOCOL").String() == "fcgi" {
+		Protocol = SCHEME_FCGI
+	} else if sec.Key("PROTOCOL").String() == "unix" {
+		Protocol = SCHEME_UNIX_SOCKET
+		UnixSocketPermissionRaw := sec.Key("UNIX_SOCKET_PERMISSION").MustString("666")
+		UnixSocketPermissionParsed, err := strconv.ParseUint(UnixSocketPermissionRaw, 8, 32)
+		if err != nil || UnixSocketPermissionParsed > 0777 {
+			log.Fatal(2, "Fail to parse unixSocketPermission: %s", UnixSocketPermissionRaw)
+		}
+		UnixSocketPermission = uint32(UnixSocketPermissionParsed)
+	}
+	Domain = sec.Key("DOMAIN").MustString("localhost")
+	HTTPAddr = sec.Key("HTTP_ADDR").MustString("0.0.0.0")
+	HTTPPort = sec.Key("HTTP_PORT").MustString("8080")
+	LocalURL = sec.Key("LOCAL_ROOT_URL").MustString(string(Protocol) + "://localhost:" + HTTPPort + "/")
 	OfflineMode = sec.Key("OFFLINE_MODE").MustBool()
+	DisableRouterLog = sec.Key("DISABLE_ROUTER_LOG").MustBool()
+	StaticRootPath = sec.Key("STATIC_ROOT_PATH").MustString(workDir)
+	AppDataPath = sec.Key("APP_DATA_PATH").MustString("data")
+	EnableGzip = sec.Key("ENABLE_GZIP").MustBool()
 
-	sec = Cfg.Section("site")
-	Site.Name = sec.Key("NAME").MustString("Peach Server")
-	Site.Desc = sec.Key("DESC").String()
-	Site.UseCDN = sec.Key("USE_CDN").MustBool()
-	Site.URL = sec.Key("URL").String()
+	switch sec.Key("LANDING_PAGE").MustString("home") {
+	case "explore":
+		LandingPageURL = LANDING_PAGE_EXPLORE
+	default:
+		LandingPageURL = LANDING_PAGE_HOME
+	}
 
-	sec = Cfg.Section("page")
-	Page.HasLandingPage = sec.Key("HAS_LANDING_PAGE").MustBool()
-	Page.DocsBaseURL = sec.Key("DOCS_BASE_URL").Validate(func(in string) string {
-		if len(in) == 0 {
-			return "/docs"
-		} else if in[0] != '/' {
-			return "/" + in
-		}
-		return in
-	})
+	sec = Cfg.Section("security")
+	InstallLock = sec.Key("INSTALL_LOCK").MustBool()
+	SecretKey = sec.Key("SECRET_KEY").String()
+	LogInRememberDays = sec.Key("LOGIN_REMEMBER_DAYS").MustInt()
+	CookieUserName = sec.Key("COOKIE_USERNAME").String()
+	CookieRememberName = sec.Key("COOKIE_REMEMBER_NAME").String()
+	CookieSecure = sec.Key("COOKIE_SECURE").MustBool(false)
+	ReverseProxyAuthUser = sec.Key("REVERSE_PROXY_AUTHENTICATION_USER").MustString("X-WEBAUTH-USER")
 
-	Page.UseCustomTpl = sec.Key("USE_CUSTOM_TPL").MustBool()
-	Page.NavbarTplPath = "navbar.html"
-	Page.HomeTplPath = "home.html"
-	Page.DocsTplPath = "docs.html"
-	Page.FooterTplPath = "footer.html"
-	Page.DisqusTplPath = "disqus.html"
-	Page.DuoShuoTplPath = "duoshuo.html"
+	sec = Cfg.Section("attachment")
+	AttachmentPath = sec.Key("PATH").MustString(path.Join(AppDataPath, "attachments"))
+	if !filepath.IsAbs(AttachmentPath) {
+		AttachmentPath = path.Join(workDir, AttachmentPath)
+	}
+	AttachmentAllowedTypes = strings.Replace(sec.Key("ALLOWED_TYPES").MustString("image/jpeg,image/png"), "|", ",", -1)
+	AttachmentMaxSize = sec.Key("MAX_SIZE").MustInt64(4)
+	AttachmentMaxFiles = sec.Key("MAX_FILES").MustInt(5)
+	AttachmentEnabled = sec.Key("ENABLE").MustBool(true)
 
-	sec = Cfg.Section("navbar")
-	list := sec.KeyStrings()
-	Navbar.Items = make([]*NavbarItem, len(list))
-	for i, name := range list {
-		secName := "navbar." + sec.Key(name).String()
-		Navbar.Items[i] = &NavbarItem{
-			Icon:   Cfg.Section(secName).Key("ICON").String(),
-			Locale: Cfg.Section(secName).Key("LOCALE").MustString(secName),
-			Link:   Cfg.Section(secName).Key("LINK").MustString("/"),
-			Blank:  Cfg.Section(secName).Key("BLANK").MustBool(),
+	TimeFormat = map[string]string{
+		"ANSIC":       time.ANSIC,
+		"UnixDate":    time.UnixDate,
+		"RubyDate":    time.RubyDate,
+		"RFC822":      time.RFC822,
+		"RFC822Z":     time.RFC822Z,
+		"RFC850":      time.RFC850,
+		"RFC1123":     time.RFC1123,
+		"RFC1123Z":    time.RFC1123Z,
+		"RFC3339":     time.RFC3339,
+		"RFC3339Nano": time.RFC3339Nano,
+		"Kitchen":     time.Kitchen,
+		"Stamp":       time.Stamp,
+		"StampMilli":  time.StampMilli,
+		"StampMicro":  time.StampMicro,
+		"StampNano":   time.StampNano,
+	}[Cfg.Section("time").Key("FORMAT").MustString("RFC1123")]
+
+	RunUser = Cfg.Section("").Key("RUN_USER").String()
+	// Does not check run user when the install lock is off.
+	if InstallLock {
+		currentUser, match := IsRunUserMatchCurrentUser(RunUser)
+		if !match {
+			log.Fatal(2, "Expect user '%s' but current user is: %s", RunUser, currentUser)
 		}
 	}
 
-	sec = Cfg.Section("asset")
-	Asset.CustomCSS = sec.Key("CUSTOM_CSS").String()
+	ProdMode = Cfg.Section("").Key("RUN_MODE").String() == "prod"
 
-	sec = Cfg.Section("docs")
-	Docs.Type = DocType(sec.Key("TYPE").In("local", []string{LOCAL, REMOTE}))
-	Docs.Target = sec.Key("TARGET").String()
-	Docs.Secret = sec.Key("SECRET").String()
-	Docs.Langs = Cfg.Section("i18n").Key("LANGS").Strings(",")
-	Docs.Locales = make(map[string][]byte)
-	for _, lang := range Docs.Langs {
-		if lang == "en-US" || lang == "zh-CN" {
-			Docs.Locales["locale_"+lang+".ini"] = bindata.MustAsset("conf/locale/locale_" + lang + ".ini")
-		} else {
-			Docs.Locales["locale_"+lang+".ini"] = []byte("")
+	sec = Cfg.Section("picture")
+	AvatarUploadPath = sec.Key("AVATAR_UPLOAD_PATH").MustString(path.Join(AppDataPath, "avatars"))
+	forcePathSeparator(AvatarUploadPath)
+	if !filepath.IsAbs(AvatarUploadPath) {
+		AvatarUploadPath = path.Join(workDir, AvatarUploadPath)
+	}
+	switch source := sec.Key("GRAVATAR_SOURCE").MustString("gravatar"); source {
+	case "duoshuo":
+		GravatarSource = "http://gravatar.duoshuo.com/avatar/"
+	case "gravatar":
+		GravatarSource = "https://secure.gravatar.com/avatar/"
+	case "libravatar":
+		GravatarSource = "https://seccdn.libravatar.org/avatar/"
+	default:
+		GravatarSource = source
+	}
+	DisableGravatar = sec.Key("DISABLE_GRAVATAR").MustBool()
+	EnableFederatedAvatar = sec.Key("ENABLE_FEDERATED_AVATAR").MustBool(true)
+	if OfflineMode {
+		DisableGravatar = true
+		EnableFederatedAvatar = false
+	}
+	if DisableGravatar {
+		EnableFederatedAvatar = false
+	}
+
+	if EnableFederatedAvatar {
+		LibravatarService = libravatar.New()
+		parts := strings.Split(GravatarSource, "/")
+		if len(parts) >= 3 {
+			if parts[0] == "https:" {
+				LibravatarService.SetUseHTTPS(true)
+				LibravatarService.SetSecureFallbackHost(parts[2])
+			} else {
+				LibravatarService.SetUseHTTPS(false)
+				LibravatarService.SetFallbackHost(parts[2])
+			}
 		}
 	}
 
-	sec = Cfg.Section("extension")
-	Extension.EnableEditPage = sec.Key("ENABLE_EDIT_PAGE").MustBool()
-	Extension.EditPageLinkFormat = sec.Key("EDIT_PAGE_LINK_FORMAT").String()
-	Extension.EnableDisqus = sec.Key("ENABLE_DISQUS").MustBool()
-	Extension.DisqusShortName = sec.Key("DISQUS_SHORT_NAME").String()
-	Extension.EnableDuoShuo = sec.Key("ENABLE_DUOSHUO").MustBool()
-	Extension.DuoShuoShortName = sec.Key("DUOSHUO_SHORT_NAME").String()
-	Extension.HighlightJSCustomCSS = sec.Key("HIGHLIGHTJS_CUSTOM_CSS").String()
-	Extension.EnableSearch = sec.Key("ENABLE_SEARCH").MustBool()
-	Extension.GABlock = sec.Key("GA_BLOCK").String()
+	if err = Cfg.Section("http").MapTo(&HTTP); err != nil {
+		log.Fatal(2, "Fail to map HTTP settings: %v", err)
+	} else if err = Cfg.Section("webhook").MapTo(&Webhook); err != nil {
+		log.Fatal(2, "Fail to map Webhook settings: %v", err)
+	} else if err = Cfg.Section("markdown").MapTo(&Markdown); err != nil {
+		log.Fatal(2, "Fail to map Markdown settings: %v", err)
+	} else if err = Cfg.Section("admin").MapTo(&Admin); err != nil {
+		log.Fatal(2, "Fail to map Admin settings: %v", err)
+	} else if err = Cfg.Section("ui").MapTo(&UI); err != nil {
+		log.Fatal(2, "Fail to map UI settings: %v", err)
+	}
+
+	Langs = Cfg.Section("i18n").Key("LANGS").Strings(",")
+	Names = Cfg.Section("i18n").Key("NAMES").Strings(",")
+	dateLangs = Cfg.Section("i18n.datelang").KeysHash()
+
+	ShowFooterBranding = Cfg.Section("other").Key("SHOW_FOOTER_BRANDING").MustBool()
+	ShowFooterVersion = Cfg.Section("other").Key("SHOW_FOOTER_VERSION").MustBool()
+	ShowFooterTemplateLoadTime = Cfg.Section("other").Key("SHOW_FOOTER_TEMPLATE_LOAD_TIME").MustBool()
+
+	HasRobotsTxt = com.IsFile(path.Join(CustomPath, "robots.txt"))
 }
 
 var Service struct {
@@ -393,7 +554,7 @@ func newLogService() {
 			}
 
 		case log.FILE:
-			logPath := path.Join(LogRootPath, "gogs.log")
+			logPath := path.Join(LogRootPath, "aiicyds.log")
 			if err = os.MkdirAll(path.Dir(logPath), os.ModePerm); err != nil {
 				log.Fatal(4, "Fail to create log directory '%s': %v", path.Dir(logPath), err)
 			}

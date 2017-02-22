@@ -20,7 +20,7 @@ import (
 	log "gopkg.in/clog.v1"
 )
 
-const DOC_URL = "https://github.com/gogits/go-gogs-client/wiki"
+const DOC_URL = "https://github.com/Aiicy/AiicyDS/wiki"
 
 type (
 	TplName string
