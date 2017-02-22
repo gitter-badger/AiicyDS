@@ -5,11 +5,14 @@
 package setting
 
 import (
+	"fmt"
 	"net/mail"
 	"net/url"
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -62,7 +65,6 @@ func (t DocType) IsRemote() bool {
 }
 
 var (
-	CustomConf = "custom/app.ini"
 	// Build information should only be set by -ldflags.
 	BuildTime string
 
@@ -228,7 +230,9 @@ var (
 	ShowFooterTemplateLoadTime bool
 
 	// Global setting objects
+	Cfg          *ini.File
 	CustomPath   string // Custom directory path
+	CustomConf   string
 	ProdMode     bool
 	RunUser      string
 	IsWindows    bool
@@ -245,9 +249,30 @@ var (
 		EnableSearch         bool
 		GABlock              string
 	}
-
-	Cfg *ini.File
 )
+
+// execPath returns the executable path.
+func execPath() (string, error) {
+	file, err := exec.LookPath(os.Args[0])
+	if err != nil {
+		return "", err
+	}
+	return filepath.Abs(file)
+}
+
+func init() {
+	IsWindows = runtime.GOOS == "windows"
+	log.New(log.CONSOLE, log.ConsoleConfig{})
+
+	var err error
+	if AppPath, err = execPath(); err != nil {
+		log.Fatal(2, "Fail to get app path: %v\n", err)
+	}
+
+	// Note: we don't use path.Dir here because it does not handle case
+	//	which path starts with two "/" in Windows: "//psf/Home/..."
+	AppPath = strings.Replace(AppPath, "\\", "/", -1)
+}
 
 // WorkDir returns absolute path of work directory.
 func WorkDir() (string, error) {
@@ -531,6 +556,7 @@ func newLogService() {
 		mode = strings.ToLower(strings.TrimSpace(mode))
 		sec, err := Cfg.GetSection("log." + mode)
 		if err != nil {
+			fmt.Println(err)
 			log.Fatal(4, "Unknown logger mode: %s", mode)
 		}
 

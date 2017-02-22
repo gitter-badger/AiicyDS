@@ -33,7 +33,7 @@ import (
 	"github.com/mcuadros/go-version"
 	"github.com/urfave/cli"
 	log "gopkg.in/clog.v1"
-	ini "gopkg.in/ini.v1"
+	"gopkg.in/ini.v1"
 	"gopkg.in/macaron.v1"
 
 	"github.com/Aiicy/AiicyDS/modules/setting"
@@ -41,11 +41,14 @@ import (
 )
 
 var Web = cli.Command{
-	Name:   "web",
-	Usage:  "Start AiicyDS web server",
+	Name:  "web",
+	Usage: "Start AiicyDS web server",
+	Description: `AiicyDS web server is the only thing you need to run,
+and it takes care of all the other things for you`,
 	Action: runWeb,
 	Flags: []cli.Flag{
-		stringFlag("config, c", "custom/app.ini", "Custom configuration file path"),
+		stringFlag("port, p", "8080", "Temporary port number to prevent conflict"),
+		stringFlag("config, c", "custom/conf/app.ini", "Custom configuration file path"),
 	},
 }
 
@@ -80,6 +83,7 @@ func checkVersion() {
 		{"github.com/go-macaron/csrf", csrf.Version, "0.1.0"},
 		{"github.com/go-macaron/i18n", i18n.Version, "0.3.0"},
 		{"github.com/go-macaron/session", session.Version, "0.1.6"},
+		{"github.com/go-macaron/toolbox", toolbox.Version, "0.1.3"},
 		{"gopkg.in/ini.v1", ini.Version, "1.8.4"},
 		{"gopkg.in/macaron.v1", macaron.Version, "1.1.7"},
 	}
@@ -184,9 +188,13 @@ func runWeb(ctx *cli.Context) error {
 
 	m := newMacaron()
 
+	ignSignIn := context.Toggle(&context.ToggleOptions{SignInRequired: setting.Service.RequireSignInView})
 	bindIgnErr := binding.BindIgnErr
 
-	m.Get("/", routers.Home)
+	// FIXME: not all routes need go through same middlewares.
+	// Especially some AJAX requests, we can reduce middleware number to improve performance.
+	// Routers.
+	m.Get("/", ignSignIn, routers.Home)
 	m.Combo("/install", routers.InstallInit).Get(routers.Install).
 		Post(bindIgnErr(auth.InstallForm{}), routers.InstallPost)
 

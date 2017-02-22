@@ -11,6 +11,7 @@ public/img/avatar/
 *.exe
 *.exe~
 /aiicyds
+AiicyDS
 profile/
 *.pem
 output*

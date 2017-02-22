@@ -5,7 +5,6 @@ package main
 
 import (
 	"os"
-	"runtime"
 
 	"github.com/urfave/cli"
 
@@ -16,7 +15,6 @@ import (
 const APP_VER = "0.0.1"
 
 func init() {
-	runtime.GOMAXPROCS(runtime.NumCPU())
 	setting.AppVer = APP_VER
 }
 
