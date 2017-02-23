@@ -1,5 +1,5 @@
 FROM alpine:3.3
-MAINTAINER u@gogs.io
+MAINTAINER admin@aiicy.com
 
 # Install system utils & runtime dependencies
 ADD https://github.com/tianon/gosu/releases/download/1.10/gosu-amd64 /usr/sbin/gosu

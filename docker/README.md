@@ -21,7 +21,7 @@ $ docker start aiicyds
 
 Files will be store in local path `/var/aiicyds` in my case.
 
-Directory `/var/aiicyds` keeps Git repositories and Gogs data:
+Directory `/var/aiicyds` keeps AiicyDS data:
 
     /var/aiicyds
     |-- custom

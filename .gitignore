@@ -2,6 +2,7 @@
 *.db
 *.log
 log/
+.idea/
 custom/
 data/
 .vendor/
