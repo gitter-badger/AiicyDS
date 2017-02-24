@@ -66,7 +66,8 @@ func checkVersion() {
 		log.Fatal(4, "Fail to read 'templates/.VERSION': %v", err)
 	}
 	tplVer := string(data)
-	if tplVer != setting.AppVer {
+	if (strings.Compare(tplVer, setting.AppVer)) == -1 {
+	//if tplVer != setting.AppVer {
 		if version.Compare(tplVer, setting.AppVer, ">") {
 			log.Fatal(4, "Binary version is lower than template file version, did you forget to recompile AiicyDS?")
 		} else {

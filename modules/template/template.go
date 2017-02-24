@@ -6,8 +6,10 @@ package template
 
 import (
 	"container/list"
+	"crypto/md5"
 	"fmt"
 	"html/template"
+	"io"
 	"mime"
 	"path/filepath"
 	"runtime"
@@ -62,8 +64,14 @@ func NewFuncMap() []template.FuncMap {
 		"RawTimeSince": base.RawTimeSince,
 		"FileSize":     base.FileSize,
 		"Subtract":     base.Subtract,
-		"Add": func(a, b int) int {
-			return a + b
+		"add": func(nums ...interface{}) int {
+			total := 0
+			for _, num := range nums {
+				if n, ok := num.(int); ok {
+					total += n
+				}
+			}
+			return total
 		},
 		"ActionIcon": ActionIcon,
 		"DateFmtLong": func(t time.Time) string {
@@ -73,7 +81,7 @@ func NewFuncMap() []template.FuncMap {
 			return t.Format("Jan 02, 2006")
 		},
 		"List": List,
-		"SubStr": func(str string, start, length int) string {
+		"substring": func(str string, start, length int) string {
 			if len(str) == 0 {
 				return ""
 			}
@@ -104,6 +112,29 @@ func NewFuncMap() []template.FuncMap {
 			}
 			return "tab-size-8"
 		},
+		"noescape": func(s string) template.HTML {
+			return template.HTML(s)
+		},
+		// 获取gravatar头像
+		"gravatar": Gravatar,
+		"explode": func(s, sep string) []string {
+			return strings.Split(s, sep)
+		},
+		"timestamp": func(ts ...time.Time) int64 {
+			if len(ts) > 0 {
+				return ts[0].Unix()
+				}
+				return time.Now().Unix()
+		},
+		"time_format": func(i interface{}) string {
+			ctime, ok := i.(string)
+			if !ok {
+				return ""
+			}
+			t, _ := time.Parse("2006-01-02 15:04:05", ctime)
+			return t.Format(time.RFC3339) + "+08:00"
+		},
+
 	}}
 }
 
@@ -155,4 +186,27 @@ func ActionIcon(opType int) string {
 
 func EscapePound(str string) string {
 	return strings.NewReplacer("%", "%25", "#", "%23", " ", "%20", "?", "%3F").Replace(str)
+}
+
+
+
+const qiniuDomain = "http://studygolang.qiniudn.com"
+
+// 获取头像
+func Gravatar(avatar string, emailI interface{}, size uint16) string {
+	if avatar != "" {
+		return fmt.Sprintf("%s/avatar/%s?imageView2/2/w/%d", qiniuDomain, avatar, size)
+	}
+
+	email, ok := emailI.(string)
+	if !ok {
+		return fmt.Sprintf("%s/avatar/gopher28.png?imageView2/2/w/%d", qiniuDomain, size)
+	}
+	return fmt.Sprintf("http://gravatar.duoshuo.com/avatar/%s?s=%d", Md5(email), size)
+}
+
+func Md5(text string) string {
+	hashMd5 := md5.New()
+	io.WriteString(hashMd5, text)
+	return fmt.Sprintf("%x", hashMd5.Sum(nil))
 }
