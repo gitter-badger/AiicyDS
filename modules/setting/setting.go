@@ -312,7 +312,7 @@ func IsRunUserMatchCurrentUser(runUser string) (string, bool) {
 func NewContext() {
 	workDir, err := WorkDir()
 	if err != nil {
-		log.Fatal(2, "Fail t o get work directory: %v", err)
+		log.Fatal(2, "Fail to get work directory: %v", err)
 	}
 
 	Cfg, err = ini.Load(bindata.MustAsset("conf/app.ini"))
