@@ -210,9 +210,13 @@ func runWeb(ctx *cli.Context) error {
 	})
 	
 	//hello world test
+	/*
 	m.Get("/", func() string {
 		return "Hello World!"
 	})
+	*/
+	//index test
+	m.Get("/index", routers.Index)
 
 	// Not found handler.
 	m.NotFound(routers.NotFound)
