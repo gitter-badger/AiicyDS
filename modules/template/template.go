@@ -73,7 +73,6 @@ func NewFuncMap() []template.FuncMap {
 			}
 			return total
 		},
-		"ActionIcon": ActionIcon,
 		"DateFmtLong": func(t time.Time) string {
 			return t.Format(time.RFC1123Z)
 		},
@@ -157,31 +156,6 @@ func List(l *list.List) chan interface{} {
 		close(c)
 	}()
 	return c
-}
-
-// ActionIcon accepts a int that represents action operation type
-// and returns a icon class name.
-func ActionIcon(opType int) string {
-	switch opType {
-	case 1, 8: // Create and transfer repository
-		return "repo"
-	case 5, 9: // Commit repository
-		return "git-commit"
-	case 6: // Create issue
-		return "issue-opened"
-	case 7: // New pull request
-		return "git-pull-request"
-	case 10: // Comment issue
-		return "comment-discussion"
-	case 11: // Merge pull request
-		return "git-merge"
-	case 12, 14: // Close issue or pull request
-		return "issue-closed"
-	case 13, 15: // Reopen issue or pull request
-		return "issue-reopened"
-	default:
-		return "invalid type"
-	}
 }
 
 func EscapePound(str string) string {
