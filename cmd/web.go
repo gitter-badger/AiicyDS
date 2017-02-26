@@ -189,16 +189,24 @@ func runWeb(ctx *cli.Context) error {
 
 	m := newMacaron()
 
-	// ignSignIn := context.Toggle(&context.ToggleOptions{SignInRequired: setting.Service.RequireSignInView})
+	ignSignIn := context.Toggle(&context.ToggleOptions{SignInRequired: setting.Service.RequireSignInView})
 	bindIgnErr := binding.BindIgnErr
 
 	// FIXME: not all routes need go through same middlewares.
 	// Especially some AJAX requests, we can reduce middleware number to improve performance.
 	// Routers.
-	// m.Get("/", ignSignIn, routers.Home)
+	m.Get("/", ignSignIn, routers.Home)
 
 	m.Combo("/install", routers.InstallInit).Get(routers.Install).
 		Post(bindIgnErr(auth.InstallForm{}), routers.InstallPost)
+
+	//add more router for install
+	/*
+	m.Get("/install", routers.SetupConfig)
+	m.Route("/install/setup-config", "GET,POST",routers.SetupConfig)
+	m.Route("/install/do", "GET,POST", routers.DoInstall)
+	m.Route("/install/options", "GET,POST", routers.SetupOptions)
+	*/
 
 	// robots.txt
 	m.Get("/robots.txt", func(ctx *context.Context) {

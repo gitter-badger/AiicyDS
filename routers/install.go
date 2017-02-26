@@ -29,7 +29,7 @@ import (
 )
 
 const (
-	INSTALL base.TplName = "install"
+	INSTALL base.TplName = "install/install"
 )
 
 func checkRunMode() {
