@@ -19,6 +19,8 @@ import (
 	"gopkg.in/ini.v1"
 	"gopkg.in/macaron.v1"
 
+	"fmt"
+
 	"github.com/Aiicy/AiicyDS/models"
 	"github.com/Aiicy/AiicyDS/modules/auth"
 	"github.com/Aiicy/AiicyDS/modules/base"
@@ -79,6 +81,11 @@ func InstallInit(ctx *context.Context) {
 		dbOpts = append(dbOpts, "SQLite3")
 	}
 	ctx.Data["DbOptions"] = dbOpts
+
+	step := context.MustInt(ctx.QueryParam("step"), 1)
+	if step == 2 {
+		fmt.Println("it works.")
+	}
 }
 
 func Install(ctx *context.Context) {

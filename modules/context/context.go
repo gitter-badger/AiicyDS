@@ -6,6 +6,10 @@ package context
 
 import (
 	"fmt"
+	"net/http"
+	"net/url"
+	"runtime"
+	"strconv"
 	"strings"
 
 	"gopkg.in/macaron.v1"
@@ -30,6 +34,51 @@ type Context struct {
 	User        *models.User
 	IsSigned    bool
 	IsBasicAuth bool
+	query       url.Values
+	request     *http.Request
+}
+
+// Conver string to int.
+func MustInt(s string, defaultVal ...int) int {
+	getDefault := func() int {
+		if len(defaultVal) > 0 {
+			return defaultVal[0]
+		}
+		return 0
+	}
+
+	if s == "" {
+		return getDefault()
+	}
+
+	i, err := strconv.Atoi(strings.TrimSpace(s))
+	if err != nil {
+		msg := "context MustInt strconv.Atoi error:" + err.Error()
+		_, callerFile, line, ok := runtime.Caller(1)
+		if ok {
+			msg += fmt.Sprintf("file:%s,line:%d", callerFile, line)
+		}
+		log.Trace("context MustInt: %s", msg)
+		return getDefault()
+	}
+
+	return i
+}
+
+// QueryParam returns the query param for the provided name.
+func (c *Context) QueryParam(name string) string {
+	if c.query == nil {
+		c.query = c.request.URL.Query()
+	}
+	return c.query.Get(name)
+}
+
+// QueryParams returns the query parameters as `url.Values`.
+func (c *Context) QueryParams() url.Values {
+	if c.query == nil {
+		c.query = c.request.URL.Query()
+	}
+	return c.query
 }
 
 // HasError returns true if error occurs in form validation.
