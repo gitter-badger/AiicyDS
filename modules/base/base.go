@@ -26,6 +26,13 @@ type (
 	TplName string
 )
 
+// EncodeMD5 encodes string to md5 hex value.
+func EncodeMD5(str string) string {
+	m := md5.New()
+	m.Write([]byte(str))
+	return hex.EncodeToString(m.Sum(nil))
+}
+
 func ShortSha(sha1 string) string {
 	if len(sha1) > 10 {
 		return sha1[:10]

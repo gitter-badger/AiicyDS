@@ -19,8 +19,6 @@ import (
 	"gopkg.in/ini.v1"
 	"gopkg.in/macaron.v1"
 
-	"fmt"
-
 	"github.com/Aiicy/AiicyDS/models"
 	"github.com/Aiicy/AiicyDS/modules/auth"
 	"github.com/Aiicy/AiicyDS/modules/base"
@@ -31,7 +29,7 @@ import (
 )
 
 const (
-	INSTALL base.TplName = "install/install"
+	INSTALL base.TplName = "install"
 )
 
 func checkRunMode() {
@@ -81,11 +79,6 @@ func InstallInit(ctx *context.Context) {
 		dbOpts = append(dbOpts, "SQLite3")
 	}
 	ctx.Data["DbOptions"] = dbOpts
-
-	step := context.MustInt(ctx.QueryParam("step"), 1)
-	if step == 2 {
-		fmt.Println("it works.")
-	}
 }
 
 func Install(ctx *context.Context) {
@@ -196,7 +189,7 @@ func InstallPost(ctx *context.Context, form auth.InstallForm) {
 	if err := models.NewTestEngine(x); err != nil {
 		if strings.Contains(err.Error(), `Unknown database type: sqlite3`) {
 			ctx.Data["Err_DbType"] = true
-			ctx.RenderWithErr(ctx.Tr("install.sqlite3_not_available", "https://gogs.io/docs/installation/install_from_binary.html"), INSTALL, &form)
+			ctx.RenderWithErr(ctx.Tr("install.sqlite3_not_available", "https://aiicyds.io/docs/installation/install_from_binary.html"), INSTALL, &form)
 		} else {
 			ctx.Data["Err_DbSetting"] = true
 			ctx.RenderWithErr(ctx.Tr("install.invalid_db_setting", err), INSTALL, &form)

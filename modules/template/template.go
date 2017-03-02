@@ -94,6 +94,7 @@ func NewFuncMap() []template.FuncMap {
 			return str[start:end]
 		},
 		"Join":        strings.Join,
+		"MD5":         base.EncodeMD5,
 		"EscapePound": EscapePound,
 		"ThemeColorMetaTag": func() string {
 			return setting.UI.ThemeColorMetaTag
@@ -111,29 +112,6 @@ func NewFuncMap() []template.FuncMap {
 			}
 			return "tab-size-8"
 		},
-		"noescape": func(s string) template.HTML {
-			return template.HTML(s)
-		},
-		// 获取gravatar头像
-		"gravatar": Gravatar,
-		"explode": func(s, sep string) []string {
-			return strings.Split(s, sep)
-		},
-		"timestamp": func(ts ...time.Time) int64 {
-			if len(ts) > 0 {
-				return ts[0].Unix()
-				}
-				return time.Now().Unix()
-		},
-		"time_format": func(i interface{}) string {
-			ctime, ok := i.(string)
-			if !ok {
-				return ""
-			}
-			t, _ := time.Parse("2006-01-02 15:04:05", ctime)
-			return t.Format(time.RFC3339) + "+08:00"
-		},
-
 	}}
 }
 
@@ -161,8 +139,6 @@ func List(l *list.List) chan interface{} {
 func EscapePound(str string) string {
 	return strings.NewReplacer("%", "%25", "#", "%23", " ", "%20", "?", "%3F").Replace(str)
 }
-
-
 
 const qiniuDomain = "http://studygolang.qiniudn.com"
 

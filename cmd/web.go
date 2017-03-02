@@ -67,7 +67,6 @@ func checkVersion() {
 	}
 	tplVer := string(data)
 	if (strings.Compare(tplVer, setting.AppVer)) == -1 {
-	//if tplVer != setting.AppVer {
 		if version.Compare(tplVer, setting.AppVer, ">") {
 			log.Fatal(4, "Binary version is lower than template file version, did you forget to recompile AiicyDS?")
 		} else {
@@ -200,14 +199,6 @@ func runWeb(ctx *cli.Context) error {
 	m.Combo("/install", routers.InstallInit).Get(routers.Install).
 		Post(bindIgnErr(auth.InstallForm{}), routers.InstallPost)
 
-	//add more router for install
-	/*
-	m.Get("/install", routers.SetupConfig)
-	m.Route("/install/setup-config", "GET,POST",routers.SetupConfig)
-	m.Route("/install/do", "GET,POST", routers.DoInstall)
-	m.Route("/install/options", "GET,POST", routers.SetupOptions)
-	*/
-
 	// robots.txt
 	m.Get("/robots.txt", func(ctx *context.Context) {
 		if setting.HasRobotsTxt {
@@ -216,15 +207,6 @@ func runWeb(ctx *cli.Context) error {
 			ctx.Error(404)
 		}
 	})
-	
-	//hello world test
-	/*
-	m.Get("/", func() string {
-		return "Hello World!"
-	})
-	*/
-	//index test
-	m.Get("/index", routers.Index)
 
 	// Not found handler.
 	m.NotFound(routers.NotFound)
