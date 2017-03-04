@@ -13,21 +13,21 @@
 				<form class="ui form" action="{{AppSubUrl}}/install" method="post">
 					<!-- Admin Settings -->
 					<h4 class="ui dividing header">{{.i18n.Tr "install.admin_title"}}</h4>
-					<div class="inline field {{if .Err_AdminName}}error{{end}}">
+					<div class="inline required field {{if .Err_AdminName}}error{{end}}">
 						<label for="admin_name">{{.i18n.Tr "install.admin_name"}}</label>
-						<input id="admin_name" name="admin_name" value="{{.admin_name}}">
+						<input id="admin_name" name="admin_name" value="{{.admin_name}}" required>
 					</div>
-					<div class="inline field {{if .Err_AdminPasswd}}error{{end}}">
+					<div class="inline required field {{if .Err_AdminPasswd}}error{{end}}">
 						<label for="admin_passwd">{{.i18n.Tr "install.admin_password"}}</label>
-						<input id="admin_passwd" name="admin_passwd" type="password" value="{{.admin_passwd}}">
+						<input id="admin_passwd" name="admin_passwd" type="password" value="{{.admin_passwd}}" required>
 					</div>
-					<div class="inline field {{if .Err_AdminPasswd}}error{{end}}">
+					<div class="inline required field {{if .Err_AdminPasswd}}error{{end}}">
 						<label for="admin_confirm_passwd">{{.i18n.Tr "install.confirm_password"}}</label>
-						<input id="admin_confirm_passwd" name="admin_confirm_passwd" type="password" value="{{.admin_confirm_passwd}}">
+						<input id="admin_confirm_passwd" name="admin_confirm_passwd" type="password" value="{{.admin_confirm_passwd}}" required>
 					</div>
-					<div class="inline field {{if .Err_AdminEmail}}error{{end}}">
+					<div class="inline required field {{if .Err_AdminEmail}}error{{end}}">
 						<label for="admin_email">{{.i18n.Tr "install.admin_email"}}</label>
-						<input id="admin_email" name="admin_email" type="email" value="{{.admin_email}}">
+						<input id="admin_email" name="admin_email" type="email" value="{{.admin_email}}" required>
 					</div>
 					<!-- Dtabase Settings -->
 					<h4 class="ui dividing header">{{.i18n.Tr "install.db_title"}}</h4>

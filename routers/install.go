@@ -25,7 +25,6 @@ import (
 	"github.com/Aiicy/AiicyDS/modules/context"
 	"github.com/Aiicy/AiicyDS/modules/mailer"
 	"github.com/Aiicy/AiicyDS/modules/setting"
-	"github.com/Aiicy/AiicyDS/modules/user"
 )
 
 const (
@@ -105,13 +104,7 @@ func Install(ctx *context.Context) {
 	// Application general settings
 	form.AppName = setting.AppName
 
-	// Note(unknwon): it's hard for Windows users change a running user,
-	// 	so just use current one if config says default.
-	if setting.IsWindows && setting.RunUser == "git" {
-		form.RunUser = user.CurrentUsername()
-	} else {
-		form.RunUser = setting.RunUser
-	}
+	form.RunUser = setting.RunUser
 
 	form.Domain = setting.Domain
 	form.HTTPPort = setting.HTTPPort
