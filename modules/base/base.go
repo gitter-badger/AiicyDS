@@ -1,12 +1,23 @@
-// Copyright 2017 The Aiicy Team. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
+// Copyright 2017 The Aiicy Team.
+//
+// Licensed under the Apache License, Version 2.0 (the "License"): you may
+// not use this file except in compliance with the License. You may obtain
+// a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations
+// under the License.
 
 package base
 
 import (
 	"crypto/md5"
 	"crypto/rand"
+	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
 	"html/template"
@@ -16,6 +27,7 @@ import (
 	"time"
 
 	"github.com/Aiicy/AiicyDS/modules/setting"
+	"github.com/Unknwon/com"
 	"github.com/Unknwon/i18n"
 	log "gopkg.in/clog.v1"
 )
@@ -66,6 +78,66 @@ func randomInt(max *big.Int) (int, error) {
 	}
 
 	return int(rand.Int64()), nil
+}
+
+// verify time limit code
+func VerifyTimeLimitCode(data string, minutes int, code string) bool {
+	if len(code) <= 18 {
+		return false
+	}
+
+	// split code
+	start := code[:12]
+	lives := code[12:18]
+	if d, err := com.StrTo(lives).Int(); err == nil {
+		minutes = d
+	}
+
+	// right active code
+	retCode := CreateTimeLimitCode(data, minutes, start)
+	if retCode == code && minutes > 0 {
+		// check time is expired or not
+		before, _ := time.ParseInLocation("200601021504", start, time.Local)
+		now := time.Now()
+		if before.Add(time.Minute*time.Duration(minutes)).Unix() > now.Unix() {
+			return true
+		}
+	}
+
+	return false
+}
+
+const TimeLimitCodeLength = 12 + 6 + 40
+
+// create a time limit code
+// code format: 12 length date time string + 6 minutes string + 40 sha1 encoded string
+func CreateTimeLimitCode(data string, minutes int, startInf interface{}) string {
+	format := "200601021504"
+
+	var start, end time.Time
+	var startStr, endStr string
+
+	if startInf == nil {
+		// Use now time create code
+		start = time.Now()
+		startStr = start.Format(format)
+	} else {
+		// use start string create code
+		startStr = startInf.(string)
+		start, _ = time.ParseInLocation(format, startStr, time.Local)
+		startStr = start.Format(format)
+	}
+
+	end = start.Add(time.Minute * time.Duration(minutes))
+	endStr = end.Format(format)
+
+	// create sha1 encode string
+	sh := sha1.New()
+	sh.Write([]byte(data + setting.SecretKey + startStr + endStr + com.ToStr(minutes)))
+	encoded := hex.EncodeToString(sh.Sum(nil))
+
+	code := fmt.Sprintf("%s%06d%s", startStr, minutes, encoded)
+	return code
 }
 
 // HashEmail hashes email address to MD5 string.
@@ -249,4 +321,13 @@ func EllipsisString(str string, length int) string {
 		return str
 	}
 	return str[:length-3] + "..."
+}
+
+// TruncateString returns a truncated string with given limit,
+// it returns input string if length is not reached limit.
+func TruncateString(str string, limit int) string {
+	if len(str) < limit {
+		return str
+	}
+	return str[:limit]
 }

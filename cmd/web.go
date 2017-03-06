@@ -1,6 +1,16 @@
-// Copyright 2017 The Aiicy Team. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
+// Copyright 2017 The Aiicy Team.
+//
+// Licensed under the Apache License, Version 2.0 (the "License"): you may
+// not use this file except in compliance with the License. You may obtain
+// a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations
+// under the License.
 
 package cmd
 
@@ -21,6 +31,7 @@ import (
 	"github.com/Aiicy/AiicyDS/modules/context"
 	"github.com/Aiicy/AiicyDS/modules/mailer"
 	"github.com/Aiicy/AiicyDS/modules/template"
+	"github.com/Aiicy/AiicyDS/routers/user"
 	"github.com/go-macaron/binding"
 	"github.com/go-macaron/cache"
 	"github.com/go-macaron/captcha"
@@ -188,6 +199,8 @@ func runWeb(ctx *cli.Context) error {
 
 	m := newMacaron()
 
+	reqSignOut := context.Toggle(&context.ToggleOptions{SignOutRequired: true})
+
 	ignSignIn := context.Toggle(&context.ToggleOptions{SignInRequired: setting.Service.RequireSignInView})
 	bindIgnErr := binding.BindIgnErr
 
@@ -195,6 +208,16 @@ func runWeb(ctx *cli.Context) error {
 	// Especially some AJAX requests, we can reduce middleware number to improve performance.
 	// Routers.
 	m.Get("/", ignSignIn, routers.Home)
+
+	// ***** START: User *****
+	m.Group("/user", func() {
+		m.Get("/login", user.SignIn)
+		m.Post("/login", bindIgnErr(auth.SignInForm{}), user.SignInPost)
+		m.Get("/sign_up", user.SignUp)
+		m.Post("/sign_up", bindIgnErr(auth.RegisterForm{}), user.SignUpPost)
+		m.Get("/reset_password", user.ResetPasswd)
+		m.Post("/reset_password", user.ResetPasswdPost)
+	}, reqSignOut)
 
 	m.Combo("/install", routers.InstallInit).Get(routers.Install).
 		Post(bindIgnErr(auth.InstallForm{}), routers.InstallPost)
