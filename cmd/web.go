@@ -209,6 +209,9 @@ func runWeb(ctx *cli.Context) error {
 	// Routers.
 	m.Get("/", ignSignIn, routers.Home)
 
+	m.Combo("/install", routers.InstallInit).Get(routers.Install).
+		Post(bindIgnErr(auth.InstallForm{}), routers.InstallPost)
+
 	// ***** START: User *****
 	m.Group("/user", func() {
 		m.Get("/login", user.SignIn)
@@ -218,9 +221,6 @@ func runWeb(ctx *cli.Context) error {
 		m.Get("/reset_password", user.ResetPasswd)
 		m.Post("/reset_password", user.ResetPasswdPost)
 	}, reqSignOut)
-
-	m.Combo("/install", routers.InstallInit).Get(routers.Install).
-		Post(bindIgnErr(auth.InstallForm{}), routers.InstallPost)
 
 	// robots.txt
 	m.Get("/robots.txt", func(ctx *context.Context) {

@@ -16,6 +16,7 @@ package routers
 
 import (
 	"github.com/Aiicy/AiicyDS/modules/base"
+	"github.com/Aiicy/AiicyDS/routers/user"
 
 	"github.com/Aiicy/AiicyDS/modules/context"
 	"github.com/Aiicy/AiicyDS/modules/setting"
@@ -26,14 +27,26 @@ const (
 )
 
 func Home(ctx *context.Context) {
-	if !setting.Page.HasLandingPage {
-		ctx.Redirect(setting.Page.DocsBaseURL)
+	if ctx.IsSigned {
+		if !ctx.User.IsActive && setting.Service.RegisterEmailConfirm {
+			ctx.Data["Title"] = ctx.Tr("auth.active_your_account")
+			ctx.HTML(200, user.ACTIVATE)
+		} else {
+			user.Dashboard(ctx)
+		}
 		return
 	}
 
-	ctx.HTML(200, "home")
-}
+	// Check auto-login.
+	uname := ctx.GetCookie(setting.CookieUserName)
+	if len(uname) != 0 {
+		ctx.Redirect(setting.AppSubUrl + "/user/login")
+		return
+	}
 
+	ctx.Data["PageIsHome"] = true
+	ctx.HTML(200, HOME)
+}
 func NotFound(ctx *context.Context) {
 	ctx.Data["Title"] = "Page Not Found"
 	ctx.Handle(404, "home.NotFound", nil)

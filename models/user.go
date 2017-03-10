@@ -119,6 +119,70 @@ func (u *User) CustomAvatarPath() string {
 	return filepath.Join(setting.AvatarUploadPath, com.ToStr(u.ID))
 }
 
+// GenerateRandomAvatar generates a random avatar for user.
+func (u *User) GenerateRandomAvatar() error {
+	seed := u.Email
+	if len(seed) == 0 {
+		seed = u.Name
+	}
+
+	img, err := avatar.RandomImage([]byte(seed))
+	if err != nil {
+		return fmt.Errorf("RandomImage: %v", err)
+	}
+	if err = os.MkdirAll(filepath.Dir(u.CustomAvatarPath()), os.ModePerm); err != nil {
+		return fmt.Errorf("MkdirAll: %v", err)
+	}
+	fw, err := os.Create(u.CustomAvatarPath())
+	if err != nil {
+		return fmt.Errorf("Create: %v", err)
+	}
+	defer fw.Close()
+
+	if err = png.Encode(fw, img); err != nil {
+		return fmt.Errorf("Encode: %v", err)
+	}
+
+	log.Info("New random avatar created: %d", u.ID)
+	return nil
+}
+
+// RelAvatarLink returns relative avatar link to the site domain,
+// which includes app sub-url as prefix. However, it is possible
+// to return full URL if user enables Gravatar-like service.
+func (u *User) RelAvatarLink() string {
+	defaultImgUrl := setting.AppSubUrl + "/img/avatar_default.png"
+	if u.ID == -1 {
+		return defaultImgUrl
+	}
+
+	switch {
+	case u.UseCustomAvatar:
+		if !com.IsExist(u.CustomAvatarPath()) {
+			return defaultImgUrl
+		}
+		return setting.AppSubUrl + "/avatars/" + com.ToStr(u.ID)
+	case setting.DisableGravatar, setting.OfflineMode:
+		if !com.IsExist(u.CustomAvatarPath()) {
+			if err := u.GenerateRandomAvatar(); err != nil {
+				log.Error(3, "GenerateRandomAvatar: %v", err)
+			}
+		}
+
+		return setting.AppSubUrl + "/avatars/" + com.ToStr(u.ID)
+	}
+	return base.AvatarLink(u.AvatarEmail)
+}
+
+// AvatarLink returns user avatar absolute link.
+func (u *User) AvatarLink() string {
+	link := u.RelAvatarLink()
+	if link[0] == '/' && link[1] != '/' {
+		return setting.AppUrl + strings.TrimPrefix(link, setting.AppSubUrl)[1:]
+	}
+	return link
+}
+
 // EncodePasswd encodes password to safe format.
 func (u *User) EncodePasswd() {
 	newPasswd := pbkdf2.Key([]byte(u.Passwd), []byte(u.Salt), 10000, 50, sha256.New)

@@ -23,6 +23,10 @@ import (
 	"path"
 	"strings"
 
+	_ "github.com/denisenkom/go-mssqldb"
+	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
+
 	"github.com/Aiicy/AiicyDS/modules/setting"
 	"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"

@@ -57,7 +57,7 @@
 						</div>
 						<div class="inline required field {{if .Err_DbSetting}}error{{end}}">
 							<label for="db_passwd">{{.i18n.Tr "install.password"}}</label>
-							<input id="db_passwd" name="db_passwd" type="password" value="{{.db_passwd}}">
+							<input id="db_passwd" name="db_passwd" type="password" value="{{.db_passwd}}" required>
 						</div>
 						<div class="inline required field {{if .Err_DbSetting}}error{{end}}">
 							<label for="db_name">{{.i18n.Tr "install.db_name"}}</label>

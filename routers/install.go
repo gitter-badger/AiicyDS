@@ -29,6 +29,8 @@ import (
 	"gopkg.in/ini.v1"
 	"gopkg.in/macaron.v1"
 
+	"fmt"
+
 	"github.com/Aiicy/AiicyDS/models"
 	"github.com/Aiicy/AiicyDS/modules/auth"
 	"github.com/Aiicy/AiicyDS/modules/base"
@@ -197,6 +199,7 @@ func InstallPost(ctx *context.Context, form auth.InstallForm) {
 			ctx.Data["Err_DbSetting"] = true
 			ctx.RenderWithErr(ctx.Tr("install.invalid_db_setting", err), INSTALL, &form)
 		}
+		fmt.Println("[AiicyDS]", err)
 		return
 	}
 

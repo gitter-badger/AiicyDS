@@ -146,6 +146,19 @@ func List(l *list.List) chan interface{} {
 	return c
 }
 
+type Actioner interface {
+	GetOpType() int
+	GetActUserName() string
+	GetRepoUserName() string
+	GetRepoName() string
+	GetRepoPath() string
+	GetRepoLink() string
+	GetBranch() string
+	GetContent() string
+	GetCreate() time.Time
+	GetIssueInfos() []string
+}
+
 func EscapePound(str string) string {
 	return strings.NewReplacer("%", "%25", "#", "%23", " ", "%20", "?", "%3F").Replace(str)
 }

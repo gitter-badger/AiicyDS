@@ -31,6 +31,7 @@ import (
 	log "gopkg.in/clog.v1"
 )
 
+// Context represents context of a request.
 type Context struct {
 	*macaron.Context
 	Cache   cache.Cache
@@ -72,6 +73,7 @@ func (ctx *Context) RenderWithErr(msg string, tpl base.TplName, form interface{}
 		auth.AssignForm(form, ctx.Data)
 	}
 	ctx.Flash.ErrorMsg = msg
+
 	ctx.Data["Flash"] = ctx.Flash
 	ctx.HTML(200, tpl)
 }
