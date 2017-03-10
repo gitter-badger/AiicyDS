@@ -22,7 +22,7 @@ import (
 
 func Test_RandomImage(t *testing.T) {
 	Convey("Generate a random avatar from email", t, func() {
-		_, err := RandomImage([]byte("gogs@local"))
+		_, err := RandomImage([]byte("AiicyDS@local"))
 		So(err, ShouldBeNil)
 
 		Convey("Try to generate an image with size zero", func() {

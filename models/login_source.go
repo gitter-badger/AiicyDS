@@ -204,7 +204,7 @@ func SMTPAuth(a smtp.Auth, cfg *SMTPConfig) error {
 	}
 	defer c.Close()
 
-	if err = c.Hello("gogs"); err != nil {
+	if err = c.Hello("AiicyDS"); err != nil {
 		return err
 	}
 

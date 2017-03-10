@@ -24,11 +24,6 @@
 		<meta property="og:title" content="{{.Owner.Name}}{{if .Owner.FullName}} ({{.Owner.FullName}}){{end}}">
 		<meta property="og:description" content="{{.Owner.Name}} has {{.Owner.NumFollowers}} followers and is following {{.Owner.NumFollowing}} people.">
 		<meta property="og:image" content="{{.Owner.AvatarLink}}" />
-	{{else if .Repository}}
-		<meta property="og:url" content="{{.Repository.HTMLURL}}" />
-		<meta property="og:type" content="object" />
-		<meta property="og:title" content="{{.Repository.FullName}}">
-		<meta property="og:description" content="{{.Repository.Description}}">
 	{{else}}  
 		<meta property="og:url" content="{{AppUrl}}" />
 		<meta property="og:type" content="website" />
@@ -62,11 +57,11 @@
 	{{end}}
 
 	<!-- Stylesheet -->
-	<link rel="stylesheet" href="{{AppSubUrl}}/css/semantic-2.2.7.min.css">
+	<link rel="stylesheet" href="{{AppSubUrl}}/css/semantic.min.css">
 	<link rel="stylesheet" href="{{AppSubUrl}}/css/aiicyds.css?v={{MD5 AppVer}}">
 
 	<!-- JavaScript -->
-	<script src="{{AppSubUrl}}/js/semantic-2.2.7.min.js"></script>
+	<script src="{{AppSubUrl}}/js/semantic.min.js"></script>
 	<script src="{{AppSubUrl}}/js/aiicyds.js?v={{MD5 AppVer}}"></script>
 
 	<title>{{if .Title}}{{.Title}} - {{end}}{{AppName}}</title>

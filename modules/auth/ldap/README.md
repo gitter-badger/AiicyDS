@@ -1,4 +1,4 @@
-Gogs LDAP Authentication Module
+AiicyDS LDAP Authentication Module
 ===============================
 
 ## About
@@ -12,7 +12,7 @@ queries the LDAP server using a Bind DN and searches for the user that is
 attempting to sign in. If the user is found, the module attempts to bind to the
 server using the user's supplied credentials. If this succeeds, the user has
 been authenticated, and his account information is retrieved and passed to the
-Gogs login infrastructure.
+AiicyDS login infrastructure.
 
 LDAP simple authentication does not utilize a Bind DN. Instead, it binds
 directly with the LDAP server using the user's supplied credentials. If the bind
