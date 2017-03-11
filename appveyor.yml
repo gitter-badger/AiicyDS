@@ -7,14 +7,15 @@ environment:
   GOPATH: c:\gopath
   GOVERSION: 1.7
 
-build: false
+before_build:
+  - go get -v -t -d
+
+build:
+  - go build -v
+
 deploy: false
 
-before_install:
-   - go get -v -t -d
-
-install:
-  - go build -v
+install: false
 
 notifications:
   - provider: Email
