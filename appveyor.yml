@@ -1,3 +1,4 @@
+
 version: "{build}"
 skip_tags: true
 clone_folder: c:\gopath\src\github.com\Aiicy\AiicyDS
@@ -9,9 +10,15 @@ environment:
 
 deploy: false
 
+before_build:
+  - go get -v -t -d 
+
 install:
-  - go get -v -t -d
   - go build -v
+  
+configuration:
+  - Debug
+  - Release
 
 notifications:
   - provider: Email
