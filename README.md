@@ -1,7 +1,7 @@
 AiicyDS(with go)
 ===========
 
-[![Build Status](https://travis-ci.org/Aiicy/AiicyCMS.svg?branch=master)](https://travis-ci.org/Aiicy/AiicyDS)
+[![Build Status](https://travis-ci.org/Aiicy/AiicyDS.svg?branch=master)](https://travis-ci.org/Aiicy/AiicyDS)
 ##Environment
 * go version >=1.6
 * system Linux or windows
