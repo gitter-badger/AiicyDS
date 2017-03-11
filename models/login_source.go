@@ -303,7 +303,11 @@ func UserSignIn(username, password string) (*User, error) {
 		user = &User{LowerName: strings.ToLower(username)}
 	}
 
+	fmt.Println("=======================")
 	hasUser, err := x.Get(user)
+	fmt.Println("=======================")
+	fmt.Println(err)
+	fmt.Println("=======================")
 	if err != nil {
 		return nil, err
 	}
