@@ -2,6 +2,7 @@ AiicyDS(with go)
 ===========
 
 [![Build Status](https://travis-ci.org/Aiicy/AiicyDS.svg?branch=master)](https://travis-ci.org/Aiicy/AiicyDS)
+[![Sourcegraph](https://sourcegraph.com/github.com/Aiicy/AiicyDS/-/badge.svg)](https://sourcegraph.com/github.com/Aiicy/AiicyDS?badge)
 ##Environment
 * go version >=1.6
 * system Linux or windows
