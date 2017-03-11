@@ -1,6 +1,8 @@
 AiicyDS(with go)
 ===========
 
+[![Join the chat at https://gitter.im/Aiicy/AiicyDS](https://badges.gitter.im/Aiicy/AiicyDS.svg)](https://gitter.im/Aiicy/AiicyDS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/Aiicy/AiicyDS.svg?branch=master)](https://travis-ci.org/Aiicy/AiicyDS)
 [![Build status](https://ci.appveyor.com/api/projects/status/h9h5y5pvno0w196d/branch/master?svg=true)](https://ci.appveyor.com/project/countstarlight/aiicyds/branch/master)
 [![Sourcegraph](https://sourcegraph.com/github.com/Aiicy/AiicyDS/-/badge.svg)](https://sourcegraph.com/github.com/Aiicy/AiicyDS?badge)
