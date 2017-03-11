@@ -10,7 +10,7 @@ environment:
 deploy: false
 
 build_script:
-  - go get -v -t -d 
+  - go build -v
 
 install:
   - go get -v -t -d 
